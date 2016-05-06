@@ -1,0 +1,17 @@
+logs
+*.log
+pids
+*.pid
+*.seed
+.grunt
+.lock-wscript
+lib-cov
+node_modules
+coverage
+build
+dist
+tags
+.tags*
+*.map
+/*.sh
+__tests__

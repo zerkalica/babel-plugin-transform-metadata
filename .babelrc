@@ -1,0 +1,16 @@
+{
+    "presets": ["es2015-loose", "stage-0"],
+    "plugins": [
+        ["babel-plugin-module-alias", [
+            {
+                "src": "./src",
+                "expose": "babel-plugin-transform-metadata"
+            }
+        ]],
+        "syntax-flow",
+        "espower",
+        "transform-decorators-legacy",
+        "flow-comments",
+        "transform-flow-strip-types"
+    ]
+}
