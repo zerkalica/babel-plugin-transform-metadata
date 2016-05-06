@@ -11,8 +11,10 @@ Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plug
 
 ## .babelrc options
 
+Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
+
 * reflectImport - Import path to custom reflection polyfill. Without this option standard Reflection.defineMetadata will be used.
-* argComment - magic comment text. After this comment all function or constructor args will be ignored and does not inclueded to metadata.
+* argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
 
 .babelrc:
 
@@ -31,11 +33,13 @@ Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plug
 ## Interfaces
 
 flowtype and typescript reflection does not support type annotations, so we use some trick with typecast.
+
 WARNING: interface name must be unique.
 
 ```js
 import type {SomeType} from './types'
-import _ from 'babel-plugin-transform-reactive-di/_'
+// import magic _ from babel-plugin-transform-metadata/_
+import _ from 'babel-plugin-transform-metadata/_'
 
 const types = [
     [(_: SomeType), '213'] // converted to ['SomeType', '213']
@@ -50,7 +54,7 @@ export function test(depA: SomeType): void {}
 
 ## Composable
 
-In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separate di-dependencies from arguments.
+In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separates di-dependencies from call-time arguments. After this comment arguments will not be included to reflection metadata.
 
 ```js
 // test.js
@@ -67,6 +71,7 @@ _inject([A], test);
 ```
 
 di code:
+
 ```js
 // main.js
 import test from './test'
@@ -77,21 +82,14 @@ container.get(test)(new D, new D)
 
 ## Example
 
-This adds
-
-```js
-import _inject from 'reactive-di/inject' in each file
-```
-
 Transform code like this
 
 ```js
-
 /* @flow */
 import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
 
-import _ from 'babel-plugin-transform-reactive-di/_'
+import _ from 'babel-plugin-transform-metadata/_'
 
 export class A {
 
