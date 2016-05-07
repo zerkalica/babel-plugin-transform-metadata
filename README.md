@@ -10,7 +10,7 @@ Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plug
 -	We can't change reflection polyfill: Reflection object loaded as global.
 -	Main idea of babel-plugin-angular2-annotations is compability with angular2 in babel environment and contains unnecessary functionality: typescript-style decorators support.
 -	Metadata provided only for array-style arguments, not for object-style.
--	Metadata provided for all classes, but this is unnecessary, only for exported
+-	Metadata provided for all classes, but this is unnecessary
 
 .babelrc options
 ----------------
@@ -50,13 +50,12 @@ export class Test {}
 export function test2() {}
 ```
 
-Metadata for props
-------------------
+Object-style arguments
+----------------------
 
 In some cases we can't pass arguments as array, only as object (ex. react widgets).
 
 ```js
-
 export class Widget {
     constructor(props: {
         a: A
@@ -67,7 +66,11 @@ export class Widget {
 _inject([{
     a: A
 }], Widget);
+```
 
+For type aliases:
+
+```js
 type W2Props = {
     a: A
 };
@@ -80,7 +83,21 @@ class Widget2 {
 _inject([{
     a: A
 }], Widget2);
+```
 
+But for exported type aliases:
+
+```js
+export type W2Props = {
+    a: A
+};
+
+class Widget2 {
+    constructor(props: W2Props) {}
+}
+
+// Generated:
+_inject(['W2Props'], Widget2);
 ```
 
 Interfaces
@@ -88,7 +105,7 @@ Interfaces
 
 flowtype and typescript reflection does not support type annotations as value keys, so we use some trick with typecast.
 
-WARNING: interface name must be unique.
+WARNING: interface name must be unique. It's difficult to generate unique key on each interface.
 
 ```js
 import type {SomeType} from './types'
