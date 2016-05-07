@@ -36,9 +36,11 @@ type W2Props = {
     d2: D;
 }
 
-export class Widget2 {
+class Widget2 {
     constructor(props: W2Props) {}
 }
+
+export {Widget2}
 
 export type R<V> = {
     some: V;
@@ -52,8 +54,9 @@ export class C<V> {
     }
 }
 
-export function test(depA: A, /* @args */ d: D, d2: D): void {}
+function test(depA: A, /* @args */ d: D, d2: D): void {}
 
+export default test
 const types = [
     [(_: R), '213']
 ]

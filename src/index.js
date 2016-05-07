@@ -2,7 +2,8 @@ import getTypesInfo from './visitors/getTypesInfo'
 import addReflections from './visitors/addReflections'
 
 import createTypeForAnnotation from './factories/createTypeForAnnotation'
-import createCreateGenericTypeMetadata from './factories/createCreateGenericTypeMetadata'
+import createCreateCreateGenericTypeMetadata from
+    './factories/createCreateCreateGenericTypeMetadata'
 import createCreateCreateObjectTypeMetadata from './factories/createCreateCreateObjectTypeMetadata'
 import createTypeForAnnotations from './factories/createTypeForAnnotations'
 import createReflectionParamTypes from './factories/createReflectionParamTypes'
@@ -23,28 +24,31 @@ export default function babelPluginTransformReactiveDi({types: t}) {
 
                     injectId: null,
                     ambiantTypeCast: null,
-                    interfaceArgs: new Map()
+                    internalTypes: new Map(),
+                    externalTypeNames: new Map(),
+                    exportNames: new Map()
                 }
                 path.traverse(getTypesInfo, state)
 
                 const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
                     t,
-                    state.interfaceArgs
+                    state.externalTypeNames
                 )
                 const hasComment = createHasComment(opts.argComment || '@args')
                 const createCreateObjectTypeMetadata = createCreateCreateObjectTypeMetadata(
                     t,
                     hasComment
                 )
-                const createGenericTypeMetadata = createCreateGenericTypeMetadata(
+                const createCreateGenericTypeMetadata = createCreateCreateGenericTypeMetadata(
                     t,
-                    state.interfaceArgs
+                    state.externalTypeNames,
+                    state.internalTypes
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
-                    state.interfaceArgs,
+                    state.externalTypeNames,
                     createCreateObjectTypeMetadata,
-                    createGenericTypeMetadata
+                    createCreateGenericTypeMetadata
                 )
                 const typeForAnnotations = createTypeForAnnotations(
                     hasComment,
@@ -75,6 +79,7 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                 const reflectionState = {
                     magicTypeCasts: [],
                     parentPaths: [],
+                    exportNames: state.exportNames,
                     magicTypeCastExpression: state.ambiantTypeCast
                         ? state.ambiantTypeCast.node.specifiers[0].local.name
                         : ''

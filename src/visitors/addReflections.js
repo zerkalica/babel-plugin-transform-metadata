@@ -5,31 +5,35 @@ const addReflections = {
         }
     },
 
-    'ClassDeclaration|FunctionDeclaration'(path, {parentPaths}) {
+    'ClassDeclaration|FunctionDeclaration'(path, {parentPaths, exportNames}) {
         const node = path.node
         const parent = path.parent
         const ref = node.id
-
-        if (
-            parent.type === 'ExportNamedDeclaration'
+        if (!exportNames.has(ref.name)) {
+            return
+        }
+        const isInsertAfter = parent.type === 'ExportNamedDeclaration'
             || parent.type === 'ExportDefaultDeclaration'
-        ) {
-            let params;
-            if (node.type === 'ClassDeclaration') {
-                const constr = node.body.body.find((bodyNode) =>
-                    bodyNode.type === 'ClassMethod'
-                    && bodyNode.kind === 'constructor'
-                )
-                if (constr) {
-                    params = constr.params
-                }
-            } else {
-                params = node.params
-            }
 
-            if (params) {
-                parentPaths.push([path.parentPath, params, ref])
+        let params;
+        if (node.type === 'ClassDeclaration') {
+            const constr = node.body.body.find((bodyNode) =>
+                bodyNode.type === 'ClassMethod'
+                && bodyNode.kind === 'constructor'
+            )
+            if (constr) {
+                params = constr.params
             }
+        } else {
+            params = node.params
+        }
+
+        if (params) {
+            parentPaths.push([
+                isInsertAfter ? path.parentPath : path,
+                params,
+                ref
+            ])
         }
     }
 }

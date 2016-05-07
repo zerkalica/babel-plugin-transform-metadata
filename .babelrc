@@ -9,7 +9,6 @@
         ]],
         "syntax-flow",
         "espower",
-        "transform-decorators-legacy",
         "flow-comments",
         "transform-flow-strip-types"
     ]

@@ -1,9 +1,10 @@
 export default function createTypeForAnnotation(
     t,
-    interfaceArgs,
+    externalTypeNames,
     createCreateObjectTypeMetadata,
-    createGenericTypeMetadata
+    createCreateGenericTypeMetadata
 ) {
+    let createGenericTypeMetadata
     let createObjectTypeMetadata
 
     function typeForAnnotation(annotation) {
@@ -30,6 +31,6 @@ export default function createTypeForAnnotation(
         }
     }
     createObjectTypeMetadata = createCreateObjectTypeMetadata(typeForAnnotation)
-
+    createGenericTypeMetadata = createCreateGenericTypeMetadata(createObjectTypeMetadata)
     return typeForAnnotation
 }

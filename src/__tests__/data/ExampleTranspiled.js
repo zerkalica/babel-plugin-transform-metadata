@@ -43,11 +43,15 @@ type W2Props = {
     d2: D;
 };
 
-export class Widget2 {
+class Widget2 {
     constructor(props: W2Props) {}
 }
 
-_inject([W2Props], Widget2);
+_inject([{
+    a: A
+}], Widget2);
+
+export { Widget2 };
 
 export type R<V> = {
     some: V
@@ -63,8 +67,9 @@ export class C<V> {
 
 _inject([B, 'R', 'ITest', 'ITest'], C);
 
-export function test(depA: A, /* @args */d: D, d2: D): void {}
+function test(depA: A, /* @args */d: D, d2: D): void {}
 
 _inject([A], test);
 
+export default test;
 const types = [['R', '213']];

@@ -1,20 +1,24 @@
-# babel-plugin-transform-metadata
+babel-plugin-transform-metadata
+===============================
 
 Reflection metadata support for classes and functions.
 
 Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations) ?
 
-* This plugin provides reflections only for classes, not for functions.
-* It's reflection engine does not support flow interfaces: only real classes.
-* We can't change reflection polyfill: Reflection object loaded as global.
-* Main idea of babel-plugin-angular2-annotations is compability with angular2 in babel environment and contains unnecessary functionality: typescript-style decorators support.
+-	This plugin provides reflections only for classes, not for functions.
+-	It's reflection engine does not support flow interfaces: only real classes.
+-	We can't change reflection polyfill: Reflection object loaded as global.
+-	Main idea of babel-plugin-angular2-annotations is compability with angular2 in babel environment and contains unnecessary functionality: typescript-style decorators support.
+-	Metadata provided only for array-style arguments, not for object-style.
+-	Metadata provided for all classes, but this is unnecessary, only for exported
 
-## .babelrc options
+.babelrc options
+----------------
 
 Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
 
-* reflectImport - Import path to custom reflection polyfill. Without this option standard Reflection.defineMetadata will be used.
-* argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
+-	reflectImport - Import path to custom reflection polyfill. Without this option standard Reflection.defineMetadata will be used.
+-	argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
 
 .babelrc:
 
@@ -30,9 +34,59 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
 }
 ```
 
-## Interfaces
+Exports
+-------
 
-flowtype and typescript reflection does not support type annotations, so we use some trick with typecast.
+Metadata generated only for exports:
+
+```js
+export test
+export {widget}
+
+export default test2
+
+export class Test {}
+
+export function test2() {}
+```
+
+Metadata for props
+------------------
+
+In some cases we can't pass arguments as array, only as object (ex. react widgets).
+
+```js
+
+export class Widget {
+    constructor(props: {
+        a: A
+    }) {}
+}
+
+// Generated:
+_inject([{
+    a: A
+}], Widget);
+
+type W2Props = {
+    a: A
+};
+
+class Widget2 {
+    constructor(props: W2Props) {}
+}
+
+// Generated:
+_inject([{
+    a: A
+}], Widget2);
+
+```
+
+Interfaces
+----------
+
+flowtype and typescript reflection does not support type annotations as value keys, so we use some trick with typecast.
 
 WARNING: interface name must be unique.
 
@@ -50,11 +104,13 @@ const types = [
 import type {SomeType} from './types'
 
 export function test(depA: SomeType): void {}
+// _inject(['SomeType'], test);
 ```
 
-## Composable
+Composable
+----------
 
-In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separates di-dependencies from call-time arguments. After this comment arguments will not be included to reflection metadata.
+In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) and react we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separates di-dependencies from call-time arguments. After this comment arguments will not be included to reflection metadata.
 
 ```js
 // test.js
@@ -70,17 +126,28 @@ export function test(depA: A, /* @args */d: D, d2: D): void {}
 _inject([A], test);
 ```
 
-di code:
+For object-style arguments:
 
 ```js
-// main.js
-import test from './test'
-// ...
-// We don't need to provide depA, container inject it:
-container.get(test)(new D, new D)
+type W2Props = {
+    a: A
+    /* @args */
+    ; d: D;
+    d2: D;
+};
+
+class Widget2 {
+    constructor(props: W2Props) {}
+}
+
+// Generated:
+_inject([{
+    a: A
+}], Widget2);
 ```
 
-## Example
+Example
+-------
 
 Transform code like this
 
@@ -91,17 +158,43 @@ import type {ITest as IT2} from './ITest'
 
 import _ from 'babel-plugin-transform-metadata/_'
 
-export class A {
+export class A {}
 
-}
+class D {}
 
 export class B {
     a: A;
 
-    constructor(a: A) {
-        this.a = a
+    constructor(opts: {
+        a: A;
+        i: IT;
+    }) {
+        this.a = opts.a
     }
 }
+
+export class Widget {
+    constructor(props: {
+        a: A;
+        /* @args */
+        d: D;
+        d2: D;
+    }) {
+    }
+}
+
+type W2Props = {
+    a: A;
+    /* @args */
+    d: D;
+    d2: D;
+}
+
+class Widget2 {
+    constructor(props: W2Props) {}
+}
+
+export {Widget2}
 
 export type R<V> = {
     some: V;
@@ -115,12 +208,9 @@ export class C<V> {
     }
 }
 
-class D {
+function test(depA: A, /* @args */ d: D, d2: D): void {}
 
-}
-
-export function test(depA: A, /* @args */ d: D, d2: D): void {}
-
+export default test
 const types = [
     [(_: R), '213']
 ]
@@ -136,15 +226,53 @@ import type { ITest as IT2 } from './ITest';
 
 export class A {}
 
+class D {}
+
 export class B {
     a: A;
 
-    constructor(a: A) {
-        this.a = a;
+    constructor(opts: {
+        a: A;
+        i: IT;
+    }) {
+        this.a = opts.a;
     }
 }
 
-_inject([A], B);
+_inject([{
+    a: A,
+    i: 'ITest'
+}], B);
+
+export class Widget {
+    constructor(props: {
+        a: A
+        /* @args */
+        ; d: D;
+        d2: D;
+    }) {}
+}
+
+_inject([{
+    a: A
+}], Widget);
+
+type W2Props = {
+    a: A
+    /* @args */
+    ; d: D;
+    d2: D;
+};
+
+class Widget2 {
+    constructor(props: W2Props) {}
+}
+
+_inject([{
+    a: A
+}], Widget2);
+
+export { Widget2 };
 
 export type R<V> = {
     some: V
@@ -160,11 +288,10 @@ export class C<V> {
 
 _inject([B, 'R', 'ITest', 'ITest'], C);
 
-class D {}
-
-export function test(depA: A, /* @args */d: D, d2: D): void {}
+function test(depA: A, /* @args */d: D, d2: D): void {}
 
 _inject([A], test);
 
+export default test;
 const types = [['R', '213']];
 ```
