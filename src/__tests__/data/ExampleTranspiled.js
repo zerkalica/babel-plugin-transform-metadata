@@ -2,6 +2,7 @@ import _inject from 'reactive-di/inject';
 /* @flow */
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
+import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
 
 export class A {}
 
@@ -20,12 +21,13 @@ export class B {
 
 _inject([{
     a: A,
-    i: 'ITest'
+    i: 'ITest.3402154763'
 }], B);
 
 export class Widget {
     constructor(props: {
-        a: A
+        a: A;
+        i: IT3
         /* @args */
         ; d: D;
         d2: D;
@@ -33,7 +35,8 @@ export class Widget {
 }
 
 _inject([{
-    a: A
+    a: A,
+    i: 'ITest.1013217576'
 }], Widget);
 
 type W2Props = {
@@ -65,7 +68,7 @@ export class C<V> {
     }
 }
 
-_inject([B, 'R', 'ITest', 'ITest'], C);
+_inject([B, 'R', 'ITest.3402154763', 'ITest.3402154763'], C);
 
 function test(depA: A, /* @args */d: D, d2: D): void {}
 

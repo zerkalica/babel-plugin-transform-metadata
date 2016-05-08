@@ -16,7 +16,10 @@ const getTypesInfo = {
         if (parent.importKind !== 'type') {
             return
         }
-        state.externalTypeNames.set(node.local.name, node.imported.name)
+
+        const token = state.getUniqueTypeName(parent.source.value, node.imported.name)
+
+        state.externalTypeNames.set(node.local.name, token)
     },
     ExportSpecifier(path, state) {
         const node = path.node
@@ -37,7 +40,10 @@ const getTypesInfo = {
             state.internalTypes.set(node.id.name, node.right)
             return
         }
-        state.externalTypeNames.set(node.id.name, node.id.name)
+        // console.log(path.node)
+        const token = state.getUniqueTypeName('', node.id.name)
+
+        state.externalTypeNames.set(node.id.name, token)
     }
 }
 

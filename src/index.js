@@ -12,12 +12,18 @@ import createHasComment from './factories/createHasComment'
 
 import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
 import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter'
+import createGetUniqueTypeName from './factories/createGetUniqueTypeName'
 
 export default function babelPluginTransformReactiveDi({types: t}) {
     return {
+
         visitor: {
             Program(path, {file, opts}) {
+                const getUniqueTypeName = createGetUniqueTypeName(
+                    opts.typeNameStrategy || 'fullPath'
+                )
                 const state = {
+                    getUniqueTypeName,
                     reflectImport: opts.reflectImport,
                     ambiantTypeCastImport:
                         opts.ambiantTypeCastImport || 'babel-plugin-transform-metadata/_',

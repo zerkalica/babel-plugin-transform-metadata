@@ -69,6 +69,7 @@
     "sinon": "^1.17.4"
   },
   "dependencies": {
-    "babel-generator": "^6.8.0"
+    "babel-generator": "^6.8.0",
+    "crc": "^3.4.0"
   }
 }

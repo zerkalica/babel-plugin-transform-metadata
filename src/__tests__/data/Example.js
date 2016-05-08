@@ -1,6 +1,7 @@
 /* @flow */
 import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
+import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
 
 import _ from 'babel-plugin-transform-metadata/_'
 
@@ -22,6 +23,7 @@ export class B {
 export class Widget {
     constructor(props: {
         a: A;
+        i: IT3;
         /* @args */
         d: D;
         d2: D;

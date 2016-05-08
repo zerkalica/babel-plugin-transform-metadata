@@ -19,6 +19,7 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
 
 -	reflectImport - Import path to custom reflection polyfill. Without this option standard Reflection.defineMetadata will be used.
 -	argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
+-	typeNameStrategy - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only
 
 .babelrc:
 
@@ -27,11 +28,87 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
     "plugins": [
         "syntax-flow",
         ["transform-metadata", {
+            "typeNameStrategy": "fullPath",
             "argComment": "@args",
             "reflectImport": "reactive-di/inject"
         }]
     ]
 }
+```
+
+Restrictions
+------------
+
+For interface-based metadata we need to convert types to unique string tokens, something like this:
+
+```js
+import type {T} from './types'
+
+function test(t: T) {}
+Reflection.defineMetadata(['types.T'], T)
+```
+
+JS module import subsystem is poor and nothing is doing in ES standarts for improving it. It's no clean way to identify imported interface in babel plugin, if import path is relative:
+
+Types are same, but import paths is different:
+
+```js
+import type {T} from './types'
+import type {T} from '../data/types'
+```
+
+Ideally, set "typeNameStrategy": "fullPath" and always use absolute path for types via name_mapper in .flowconfig:
+
+```ini
+module.name_mapper='^babel-plugin-transform-metadata/i/\(.*\)' -> '<PROJECT_ROOT>/i/\1'
+```
+
+Like this:
+
+```js
+import type {T} from 'babel-plugin-transform-metadata/i/types'
+import type {R} from './internalTypes'
+
+function test(t: T, r: R) {}
+Reflection.defineMetadata(['T.crc1', 'R.crc2'], test)
+// where crc1 is crc32('babel-plugin-transform-metadata/i/types')
+// where crc2 is crc32('internalTypes')
+```
+
+Relative paths supported, but some collisions possible, if types with equal names are defined in different files with equal names:
+
+```js
+import type {T} from '../t2/internalTypes'
+import type {T} from '../t1/internalTypes'
+```
+
+If "typeNameStrategy" is "fullPath", types always will be in separate file to avoid collisions like this:
+
+```js
+// t1.js
+export type T = {
+    some: string;
+}
+
+function test(t: T) {}
+Reflection.defineMetadata(['T'], test)
+```
+
+```js
+// t2.js
+import type {T} from './t2'
+
+function test2(t: T) {}
+Reflection.defineMetadata(['T.t2'], test2)
+```
+
+If "typeNameStrategy" is "typeName", import paths will be ignored. But possible collisions with equal type names in different files.
+
+```js
+import type {T} from 'babel-plugin-transform-metadata/i/types'
+
+function test(t: T) {}
+Reflection.defineMetadata(['T'], test)
 ```
 
 Exports
@@ -105,8 +182,6 @@ Interfaces
 
 flowtype and typescript reflection does not support type annotations as value keys, so we use some trick with typecast.
 
-WARNING: interface name must be unique. It's difficult to generate unique key on each interface.
-
 ```js
 import type {SomeType} from './types'
 // import magic _ from babel-plugin-transform-metadata/_
@@ -172,6 +247,7 @@ Transform code like this
 /* @flow */
 import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
+import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
 
 import _ from 'babel-plugin-transform-metadata/_'
 
@@ -193,6 +269,7 @@ export class B {
 export class Widget {
     constructor(props: {
         a: A;
+        i: IT3;
         /* @args */
         d: D;
         d2: D;
@@ -240,6 +317,7 @@ import _inject from 'reactive-di/inject';
 /* @flow */
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
+import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
 
 export class A {}
 
@@ -258,12 +336,13 @@ export class B {
 
 _inject([{
     a: A,
-    i: 'ITest'
+    i: 'ITest.3402154763'
 }], B);
 
 export class Widget {
     constructor(props: {
-        a: A
+        a: A;
+        i: IT3
         /* @args */
         ; d: D;
         d2: D;
@@ -271,7 +350,8 @@ export class Widget {
 }
 
 _inject([{
-    a: A
+    a: A,
+    i: 'ITest.1013217576'
 }], Widget);
 
 type W2Props = {
@@ -303,7 +383,7 @@ export class C<V> {
     }
 }
 
-_inject([B, 'R', 'ITest', 'ITest'], C);
+_inject([B, 'R', 'ITest.3402154763', 'ITest.3402154763'], C);
 
 function test(depA: A, /* @args */d: D, d2: D): void {}
 
