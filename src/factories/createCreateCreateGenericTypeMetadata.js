@@ -2,9 +2,19 @@ import generate from 'babel-generator'
 
 const TAG = '[babel-plugin-transform-metadata]'
 
-export default function createCreateCreateGenericTypeMetadata(t, externalTypeNames, internalTypes) {
+export default function createCreateCreateGenericTypeMetadata(
+    t,
+    externalTypeNames,
+    internalTypes,
+    depsId
+) {
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation) {
+            let id = annotation.id
+            if (id.name === depsId) {
+                return createObjectTypeMetadata(annotation.typeParameters.params[0])
+            }
+
             if (annotation.typeParameters) {
                 const genericCode = generate(annotation).code
                 const plainCode = generate(annotation.id).code
@@ -13,7 +23,6 @@ export default function createCreateCreateGenericTypeMetadata(t, externalTypeNam
                 `${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`
                 )
             }
-            let id = annotation.id
             const internalType = internalTypes.get(id.name)
             if (internalType) {
                 return createObjectTypeMetadata(internalType)

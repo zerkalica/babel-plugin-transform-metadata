@@ -4,6 +4,8 @@ import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
 import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
 
+import type { Deps } from 'babel-plugin-transform-metadata/Deps';
+
 export class A {}
 
 class D {}
@@ -56,6 +58,24 @@ _inject([{
 
 export { Widget2 };
 
+type W3Props = {
+    deps: Deps<{
+        a: A
+    }>;
+    d: D;
+    d2: D;
+};
+
+class Widget3 {
+    constructor(props: W3Props) {}
+}
+
+_inject([{
+    a: A
+}], Widget3);
+
+export { Widget3 };
+
 export type R<V> = {
     some: V
 };
@@ -75,4 +95,11 @@ function test(depA: A, /* @args */d: D, d2: D): void {}
 _inject([A], test);
 
 export default test;
+
+export function test2(deps: Deps<{ a: A }>, d: D, d2: D): void {}
+
+_inject([{
+    a: A
+}], test2);
+
 const types = [['R', '213']];

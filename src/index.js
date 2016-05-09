@@ -27,13 +27,17 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                     reflectImport: opts.reflectImport,
                     ambiantTypeCastImport:
                         opts.ambiantTypeCastImport || 'babel-plugin-transform-metadata/_',
+                    ambiantDepsImport:
+                        opts.ambiantDepsImport || 'babel-plugin-transform-metadata/Deps',
 
+                    depsId: null,
                     injectId: null,
                     ambiantTypeCast: null,
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
                     exportNames: new Map()
                 }
+                state.externalTypeNames.delete(state.depsId)
                 path.traverse(getTypesInfo, state)
 
                 const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
@@ -43,12 +47,14 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                 const hasComment = createHasComment(opts.argComment || '@args')
                 const createCreateObjectTypeMetadata = createCreateCreateObjectTypeMetadata(
                     t,
-                    hasComment
+                    hasComment,
+                    state.depsId
                 )
                 const createCreateGenericTypeMetadata = createCreateCreateGenericTypeMetadata(
                     t,
                     state.externalTypeNames,
-                    state.internalTypes
+                    state.internalTypes,
+                    state.depsId
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
@@ -58,7 +64,8 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                 )
                 const typeForAnnotations = createTypeForAnnotations(
                     hasComment,
-                    typeForAnnotation
+                    typeForAnnotation,
+                    state.depsId
                 )
 
                 let defineParamTypes;

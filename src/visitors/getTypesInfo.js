@@ -9,6 +9,9 @@ const getTypesInfo = {
         if (strPath === state.ambiantTypeCastImport) {
             state.ambiantTypeCast = path
         }
+        if (strPath === state.ambiantDepsImport) {
+            state.depsId = node.specifiers[0].local.name
+        }
     },
     ImportSpecifier(path, state) {
         const node = path.node
