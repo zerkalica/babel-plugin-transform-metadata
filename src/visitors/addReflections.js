@@ -26,6 +26,7 @@ const addReflections = {
             }
         } else {
             params = node.params
+            // console.log(params)
         }
 
         if (params) {

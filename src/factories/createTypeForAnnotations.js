@@ -9,7 +9,6 @@ export default function createTypeForAnnotations(
             const type = types[i]
             const typeAnnotation = type.typeAnnotation && type.typeAnnotation.typeAnnotation
 
-
             const id = typeForAnnotation(typeAnnotation)
             if (hasComment(type)) {
                 break
@@ -18,7 +17,7 @@ export default function createTypeForAnnotations(
                 result.push(id)
             }
             // console.log(typeAnnotation.id)
-            if (typeAnnotation.id && typeAnnotation.id.name === depsId) {
+            if (typeAnnotation && typeAnnotation.id && typeAnnotation.id.name === depsId) {
                 break
             }
         }

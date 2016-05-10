@@ -1,10 +1,13 @@
-import _inject from 'reactive-di/inject';
 /* @flow */
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
 import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
 
 import type { Deps } from 'babel-plugin-transform-metadata/Deps';
+
+function _inject(params, target: any) {
+    target[Symbol.for('design:paramtypes')] = params;
+}
 
 export class A {}
 
@@ -42,7 +45,10 @@ _inject([{
 }], Widget);
 
 type W2Props = {
-    a: A
+    a: A;
+    ErrorableElement: Class<React$Component<void, {
+        error: ?string | React$Component
+    }, void>>
     /* @args */
     ; d: D;
     d2: D;
@@ -53,7 +59,8 @@ class Widget2 {
 }
 
 _inject([{
-    a: A
+    a: A,
+    ErrorableElement: 'Class'
 }], Widget2);
 
 export { Widget2 };
@@ -90,9 +97,9 @@ export class C<V> {
 
 _inject([B, 'R', 'ITest.3402154763', 'ITest.3402154763'], C);
 
-function test(depA: A, /* @args */d: D, d2: D): void {}
+function test<F: Object>(depA: A, f: F, /* @args */d: D, d2: D): void {}
 
-_inject([A], test);
+_inject([A, 'F'], test);
 
 export default test;
 
@@ -102,4 +109,4 @@ _inject([{
     a: A
 }], test2);
 
-const types = [['R', '213']];
+const types = [['R', '213'], ['ITest.1013217576', '321']];

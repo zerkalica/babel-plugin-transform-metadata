@@ -35,6 +35,9 @@ export class Widget {
 
 type W2Props = {
     a: A;
+    ErrorableElement: Class<React$Component<void, {
+        error: ?string|React$Component,
+    }, void>>;
     /* @args */
     d: D;
     d2: D;
@@ -73,12 +76,13 @@ export class C<V> {
     }
 }
 
-function test(depA: A, /* @args */ d: D, d2: D): void {}
+function test<F: Object>(depA: A, f: F, /* @args */ d: D, d2: D): void {}
 
 export default test
 
 export function test2(deps: Deps<{a: A}>, d: D, d2: D): void {}
 
 const types = [
-    [(_: R), '213']
+    [(_: R), '213'],
+    [(_: IT3), '321']
 ]

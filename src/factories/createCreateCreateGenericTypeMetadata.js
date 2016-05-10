@@ -6,13 +6,20 @@ export default function createCreateCreateGenericTypeMetadata(
     t,
     externalTypeNames,
     internalTypes,
-    depsId
+    depsId,
+    externalClassNames
 ) {
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation) {
             let id = annotation.id
             if (id.name === depsId) {
                 return createObjectTypeMetadata(annotation.typeParameters.params[0])
+            }
+            if (!externalClassNames.has(id.name)) {
+                // console.log(externalClassNames)
+                return t.stringLiteral(id.name)
+                // return createObjectTypeMetadata(internalType)
+                // throw new Error(`Unknown type detected: ${generate(annotation).code}`)
             }
 
             if (annotation.typeParameters) {

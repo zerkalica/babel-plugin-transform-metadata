@@ -18,7 +18,8 @@ const babelConfig = {
         'syntax-flow',
         'syntax-decorators',
         [pluginPath, {
-            reflectImport: 'reactive-di/inject'
+            metaDriver: 'symbol',
+            driverImport: 'reactive-di/inject'
         }]
     ]
 }

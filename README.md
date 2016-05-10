@@ -17,11 +17,12 @@ Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plug
 
 Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
 
--	reflectImport - Import path to custom reflection polyfill. Without this option standard Reflection.defineMetadata will be used.
+-	metaDriver: How to store metadata: import, symbol, reflection, property.
+-	driverImport - If "metaDriver" = "import". Path to custom reflection polyfill.
 -	argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
--	typeNameStrategy - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only
+-	typeNameStrategy - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
 
-.babelrc:
+Example .babelrc:
 
 ```json
 {
@@ -30,7 +31,8 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
         ["transform-metadata", {
             "typeNameStrategy": "fullPath",
             "argComment": "@args",
-            "reflectImport": "reactive-di/inject"
+            "metaDriver": "import",
+            "driverImport": "reactive-di/inject"
         }]
     ]
 }
@@ -249,6 +251,8 @@ import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
 import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
 
+import type {Deps} from 'babel-plugin-transform-metadata/Deps'
+
 import _ from 'babel-plugin-transform-metadata/_'
 
 export class A {}
@@ -279,6 +283,9 @@ export class Widget {
 
 type W2Props = {
     a: A;
+    ErrorableElement: Class<React$Component<void, {
+        error: ?string|React$Component,
+    }, void>>;
     /* @args */
     d: D;
     d2: D;
@@ -289,6 +296,21 @@ class Widget2 {
 }
 
 export {Widget2}
+
+type W3Props = {
+    deps: Deps<{
+        a: A;
+    }>;
+    d: D;
+    d2: D;
+}
+
+class Widget3 {
+    constructor(props: W3Props) {}
+}
+
+export {Widget3}
+
 
 export type R<V> = {
     some: V;
@@ -302,22 +324,31 @@ export class C<V> {
     }
 }
 
-function test(depA: A, /* @args */ d: D, d2: D): void {}
+function test<F: Object>(depA: A, f: F, /* @args */ d: D, d2: D): void {}
 
 export default test
+
+export function test2(deps: Deps<{a: A}>, d: D, d2: D): void {}
+
 const types = [
-    [(_: R), '213']
+    [(_: R), '213'],
+    [(_: IT3), '321']
 ]
 ```
 
 to this:
 
 ```js
-import _inject from 'reactive-di/inject';
 /* @flow */
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
 import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
+
+import type { Deps } from 'babel-plugin-transform-metadata/Deps';
+
+function _inject(params, target: any) {
+    target[Symbol.for('design:paramtypes')] = params;
+}
 
 export class A {}
 
@@ -355,7 +386,10 @@ _inject([{
 }], Widget);
 
 type W2Props = {
-    a: A
+    a: A;
+    ErrorableElement: Class<React$Component<void, {
+        error: ?string | React$Component
+    }, void>>
     /* @args */
     ; d: D;
     d2: D;
@@ -366,10 +400,29 @@ class Widget2 {
 }
 
 _inject([{
-    a: A
+    a: A,
+    ErrorableElement: 'Class'
 }], Widget2);
 
 export { Widget2 };
+
+type W3Props = {
+    deps: Deps<{
+        a: A
+    }>;
+    d: D;
+    d2: D;
+};
+
+class Widget3 {
+    constructor(props: W3Props) {}
+}
+
+_inject([{
+    a: A
+}], Widget3);
+
+export { Widget3 };
 
 export type R<V> = {
     some: V
@@ -385,10 +438,17 @@ export class C<V> {
 
 _inject([B, 'R', 'ITest.3402154763', 'ITest.3402154763'], C);
 
-function test(depA: A, /* @args */d: D, d2: D): void {}
+function test<F: Object>(depA: A, f: F, /* @args */d: D, d2: D): void {}
 
-_inject([A], test);
+_inject([A, 'F'], test);
 
 export default test;
-const types = [['R', '213']];
+
+export function test2(deps: Deps<{ a: A }>, d: D, d2: D): void {}
+
+_inject([{
+    a: A
+}], test2);
+
+const types = [['R', '213'], ['ITest.1013217576', '321']];
 ```

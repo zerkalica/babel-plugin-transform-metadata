@@ -6,17 +6,17 @@ import createCreateCreateGenericTypeMetadata from
     './factories/createCreateCreateGenericTypeMetadata'
 import createCreateCreateObjectTypeMetadata from './factories/createCreateCreateObjectTypeMetadata'
 import createTypeForAnnotations from './factories/createTypeForAnnotations'
-import createReflectionParamTypes from './factories/createReflectionParamTypes'
-import createInjectParamTypes from './factories/createInjectParamTypes'
 import createHasComment from './factories/createHasComment'
-
-import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
-import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter'
 import createGetUniqueTypeName from './factories/createGetUniqueTypeName'
+
+import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter'
+import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
+
+import createInjectorDeclaration from './metaCreators/createInjectorDeclaration'
+import createInjectParamTypes from './metaCreators/createInjectParamTypes'
 
 export default function babelPluginTransformReactiveDi({types: t}) {
     return {
-
         visitor: {
             Program(path, {file, opts}) {
                 const getUniqueTypeName = createGetUniqueTypeName(
@@ -24,15 +24,17 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                 )
                 const state = {
                     getUniqueTypeName,
-                    reflectImport: opts.reflectImport,
+                    driverImport: opts.driverImport,
                     ambiantTypeCastImport:
                         opts.ambiantTypeCastImport || 'babel-plugin-transform-metadata/_',
                     ambiantDepsImport:
                         opts.ambiantDepsImport || 'babel-plugin-transform-metadata/Deps',
 
+                    lastImportPath: null,
                     depsId: null,
                     injectId: null,
                     ambiantTypeCast: null,
+                    externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
                     exportNames: new Map()
@@ -54,7 +56,8 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                     t,
                     state.externalTypeNames,
                     state.internalTypes,
-                    state.depsId
+                    state.depsId,
+                    state.externalClassNames
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
@@ -68,24 +71,20 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                     state.depsId
                 )
 
-                let defineParamTypes;
-                let reactImportDeclaration;
+                const injectId = state.injectId || file.scope.generateUidIdentifier('inject')
 
-                if (opts.reflectImport) {
-                    const injectId = state.injectId || file.scope.generateUidIdentifier('inject')
-                    if (!state.injectId) {
-                        reactImportDeclaration = t.importDeclaration([
-                            t.importDefaultSpecifier(injectId)
-                        ], t.stringLiteral(opts.reflectImport))
-                    }
-                    defineParamTypes = createInjectParamTypes(t, injectId, typeForAnnotations)
-                } else {
-                    defineParamTypes = createReflectionParamTypes(
+                let injectorDeclaration = null
+                if (opts.metaDriver !== 'import' || !state.injectId) {
+                    injectorDeclaration = createInjectorDeclaration(
                         t,
-                        'design:paramtypes',
-                        typeForAnnotations
+                        opts.driverImport,
+                        opts.metaDriver || 'symbol',
+                        injectId,
+                        'design:paramtypes'
                     )
                 }
+
+                const defineParamTypes = createInjectParamTypes(t, injectId, typeForAnnotations)
 
                 const parentPathInsertAfter = createParentPathInsertAfter(defineParamTypes)
 
@@ -105,8 +104,12 @@ export default function babelPluginTransformReactiveDi({types: t}) {
                 if (state.ambiantTypeCast) {
                     state.ambiantTypeCast.remove()
                 }
-                if (reactImportDeclaration) {
-                    path.node.body.unshift(reactImportDeclaration)
+                if (injectorDeclaration) {
+                    if (state.lastImportPath) {
+                        state.lastImportPath.insertAfter(injectorDeclaration)
+                    } else {
+                        path.node.body.unshift(injectorDeclaration)
+                    }
                 }
             }
         }

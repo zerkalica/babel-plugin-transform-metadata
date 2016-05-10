@@ -3,19 +3,26 @@ const getTypesInfo = {
         /* eslint-disable no-param-reassign */
         const node = path.node
         const strPath = node.source.value
-        if (strPath === state.reflectImport) {
+        if (strPath === state.driverImport) {
             state.injectId = node.specifiers[0].local
         }
         if (strPath === state.ambiantTypeCastImport) {
             state.ambiantTypeCast = path
+        } else {
+            state.lastImportPath = path
         }
         if (strPath === state.ambiantDepsImport) {
             state.depsId = node.specifiers[0].local.name
         }
     },
+    ClassDeclaration(path, state) {
+        const node = path.node
+        state.externalClassNames.set(node.id.name, node.id.name)
+    },
     ImportSpecifier(path, state) {
         const node = path.node
         const parent = path.parent
+        state.externalClassNames.set(node.local.name, node.imported.name)
         if (parent.importKind !== 'type') {
             return
         }
@@ -39,6 +46,7 @@ const getTypesInfo = {
     TypeAlias(path, state) {
         const node = path.node
         const parent = path.parent
+        state.externalClassNames.set(node.id.name, node.id.name)
         if (parent.type !== 'ExportNamedDeclaration') {
             state.internalTypes.set(node.id.name, node.right)
             return
