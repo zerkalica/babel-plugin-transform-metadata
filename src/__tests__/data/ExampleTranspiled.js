@@ -110,3 +110,13 @@ _inject([{
 }], test2);
 
 const types = [['R', '213'], ['ITest.1013217576', '321']];
+
+type ErrorableElementProps = {
+    /* @args */
+    children: React$Element;
+    error?: React$Element;
+};
+
+export function ErrorableElement({ children, error }: ErrorableElementProps) {}
+
+_inject([{}], ErrorableElement);

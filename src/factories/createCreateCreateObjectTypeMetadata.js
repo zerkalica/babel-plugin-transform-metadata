@@ -30,6 +30,11 @@ export default function createCreateCreateObjectTypeMetadata(t, hasComment, deps
 //     )
                         break
                     }
+
+                    if (hasComment(property, false)) {
+                        break
+                    }
+
                     const val = typeForAnnotation(value)
                     if (val) {
                         props.push(t.objectProperty(

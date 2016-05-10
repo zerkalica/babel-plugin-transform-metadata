@@ -86,3 +86,11 @@ const types = [
     [(_: R), '213'],
     [(_: IT3), '321']
 ]
+
+type ErrorableElementProps = {
+    /* @args */
+    children: React$Element;
+    error?: React$Element;
+}
+
+export function ErrorableElement({children, error}: ErrorableElementProps) {}
