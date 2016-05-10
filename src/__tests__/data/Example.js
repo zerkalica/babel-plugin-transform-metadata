@@ -1,4 +1,6 @@
 /* @flow */
+import D from './D'
+
 import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
 import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
@@ -9,12 +11,11 @@ import _ from 'babel-plugin-transform-metadata/_'
 
 export class A {}
 
-class D {}
-
 export class B {
     a: A;
 
     constructor(opts: {
+        d: D;
         a: A;
         i: IT;
     }) {

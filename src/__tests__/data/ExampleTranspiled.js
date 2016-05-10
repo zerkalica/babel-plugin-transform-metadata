@@ -1,4 +1,6 @@
 /* @flow */
+import D from './D';
+
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
 import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
@@ -11,12 +13,11 @@ function _inject(params, target: any) {
 
 export class A {}
 
-class D {}
-
 export class B {
     a: A;
 
     constructor(opts: {
+        d: D;
         a: A;
         i: IT;
     }) {
@@ -25,6 +26,7 @@ export class B {
 }
 
 _inject([{
+    d: D,
     a: A,
     i: 'ITest.3402154763'
 }], B);
