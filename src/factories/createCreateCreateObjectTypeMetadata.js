@@ -11,9 +11,13 @@ export default function createCreateCreateObjectTypeMetadata(t, hasComment, deps
 
     return function createCreateObjectTypeMetadata(typeForAnnotation) {
         return function createObjectTypeMetadata(annotation) {
-            if (annotation.properties) {
+            let properties = annotation.properties
+            const types = annotation.types
+            if (!properties && types && types.length) {
+                properties = types[types.length - 1].properties
+            }
+            if (properties) {
                 const props = []
-                const properties = annotation.properties
                 const pr = properties.find(isDepsId)
                 if (pr) {
                     if (pr.value.typeParameters) {

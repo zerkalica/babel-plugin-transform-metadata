@@ -247,6 +247,8 @@ Transform code like this
 
 ```js
 /* @flow */
+import D from './D'
+
 import type {ITest as IT} from '../../__tests__/data/ITest'
 import type {ITest as IT2} from './ITest'
 import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
@@ -257,12 +259,11 @@ import _ from 'babel-plugin-transform-metadata/_'
 
 export class A {}
 
-class D {}
-
 export class B {
     a: A;
 
     constructor(opts: {
+        d: D;
         a: A;
         i: IT;
     }) {
@@ -281,14 +282,16 @@ export class Widget {
     }
 }
 
-type W2Props = {
+type W2Part = {
+    d2: D;
+}
+type W2Props = W2Part & {
     a: A;
     ErrorableElement: Class<React$Component<void, {
         error: ?string|React$Component,
     }, void>>;
     /* @args */
     d: D;
-    d2: D;
 }
 
 class Widget2 {
@@ -334,12 +337,22 @@ const types = [
     [(_: R), '213'],
     [(_: IT3), '321']
 ]
+
+type ErrorableElementProps = {
+    /* @args */
+    children: React$Element;
+    error?: React$Element;
+}
+
+export function ErrorableElement({children, error}: ErrorableElementProps) {}
 ```
 
 to this:
 
 ```js
 /* @flow */
+import D from './D';
+
 import type { ITest as IT } from '../../__tests__/data/ITest';
 import type { ITest as IT2 } from './ITest';
 import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
@@ -352,12 +365,11 @@ function _inject(params, target: any) {
 
 export class A {}
 
-class D {}
-
 export class B {
     a: A;
 
     constructor(opts: {
+        d: D;
         a: A;
         i: IT;
     }) {
@@ -366,6 +378,7 @@ export class B {
 }
 
 _inject([{
+    d: D,
     a: A,
     i: 'ITest.3402154763'
 }], B);
@@ -385,14 +398,16 @@ _inject([{
     i: 'ITest.1013217576'
 }], Widget);
 
-type W2Props = {
+type W2Part = {
+    d2: D
+};
+type W2Props = W2Part & {
     a: A;
     ErrorableElement: Class<React$Component<void, {
         error: ?string | React$Component
     }, void>>
     /* @args */
     ; d: D;
-    d2: D;
 };
 
 class Widget2 {
@@ -451,4 +466,14 @@ _inject([{
 }], test2);
 
 const types = [['R', '213'], ['ITest.1013217576', '321']];
+
+type ErrorableElementProps = {
+    /* @args */
+    children: React$Element;
+    error?: React$Element;
+};
+
+export function ErrorableElement({ children, error }: ErrorableElementProps) {}
+
+_inject([{}], ErrorableElement);
 ```
