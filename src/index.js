@@ -15,7 +15,7 @@ import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts
 import createInjectorDeclaration from './metaCreators/createInjectorDeclaration'
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
 
-export default function babelPluginTransformReactiveDi({types: t}) {
+export default function babelPluginTransformMetadata({types: t}) {
     return {
         visitor: {
             Program(path, {file, opts}) {
