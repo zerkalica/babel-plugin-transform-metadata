@@ -34,9 +34,14 @@
     "url": "http://github.com/zerkalica/babel-plugin-transform-metadata.git"
   },
   "keywords": [
+    "babel",
+    "plugin",
+    "transform",
     "metadata",
     "reflection",
     "interfaces",
+    "flowtype",
+    "flow",
     "dependency injection",
     "di",
     "modular"
