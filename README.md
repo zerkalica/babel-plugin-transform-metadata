@@ -3,14 +3,36 @@ babel-plugin-transform-metadata
 
 Reflection metadata support for classes and functions.
 
+[flowtype](https://flowtype.org) and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
+
+```js
+// @flow
+import type {SomeType} from './types'
+import _ from 'babel-plugin-transform-metadata/_'
+
+const types = [
+    [(_: SomeType), '213'] // converted to ['SomeType.<crc('types')>', '213']
+]
+```
+
+```js
+// @flow
+import type {SomeType} from './types'
+
+export function test(depA: SomeType): void {}
+// _inject(['SomeType.<crc('types')>'], test);
+```
+
+Features
+
+-	Can convert [flowtype](https://flowtype.org) type expressions to metadata.
+-	Various way to store metdata: Reflection polyfill, Symbol or custom imported helper.
+-	Metadata provided for plain function and object-style arguments.
+-	Metadata provided only for exported classes and functions.
+
 Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations) ?
 
--	This plugin provides reflections only for classes, not for functions.
--	It's reflection engine does not support flow interfaces: only real classes.
--	We can't change reflection polyfill: Reflection object loaded as global.
--	Main idea of babel-plugin-angular2-annotations is compability with angular2 in babel environment and contains unnecessary functionality: typescript-style decorators support.
--	Metadata provided only for array-style arguments, not for object-style.
--	Metadata provided for all classes, but this is unnecessary
+Main idea of babel-plugin-angular2-annotations is compability with [angular2](https://angular.io) in babel environment and contains unnecessary functionality: typescript-style decorators support. Interfaces not supported, only Reflection.defineMetadata used as polyfill, object-style arguments does not supported.
 
 .babelrc options
 ----------------
@@ -47,7 +69,7 @@ For interface-based metadata we need to convert types to unique string tokens, s
 import type {T} from './types'
 
 function test(t: T) {}
-Reflection.defineMetadata(['types.T'], T)
+Reflection.defineMetadata(['T.types'], T)
 ```
 
 JS module import subsystem is poor and nothing is doing in ES standarts for improving it. It's no clean way to identify imported interface in babel plugin, if import path is relative:
@@ -84,7 +106,7 @@ import type {T} from '../t2/internalTypes'
 import type {T} from '../t1/internalTypes'
 ```
 
-If "typeNameStrategy" is "fullPath", types always will be in separate file to avoid collisions like this:
+If "typeNameStrategy" is "fullPath", types always will be placed in separate files to avoid collisions like this:
 
 ```js
 // t1.js
@@ -105,13 +127,6 @@ Reflection.defineMetadata(['T.t2'], test2)
 ```
 
 If "typeNameStrategy" is "typeName", import paths will be ignored. But possible collisions with equal type names in different files.
-
-```js
-import type {T} from 'babel-plugin-transform-metadata/i/types'
-
-function test(t: T) {}
-Reflection.defineMetadata(['T'], test)
-```
 
 Exports
 -------
@@ -179,69 +194,64 @@ class Widget2 {
 _inject(['W2Props'], Widget2);
 ```
 
-Interfaces
-----------
-
-flowtype and typescript reflection does not support type annotations as value keys, so we use some trick with typecast.
-
-```js
-import type {SomeType} from './types'
-// import magic _ from babel-plugin-transform-metadata/_
-import _ from 'babel-plugin-transform-metadata/_'
-
-const types = [
-    [(_: SomeType), '213'] // converted to ['SomeType', '213']
-]
-```
-
-```js
-import type {SomeType} from './types'
-
-export function test(depA: SomeType): void {}
-// _inject(['SomeType'], test);
-```
-
 Composable
 ----------
 
 In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) and react we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separates di-dependencies from call-time arguments. After this comment arguments will not be included to reflection metadata.
 
 ```js
-// test.js
+// @flow
 export function test(depA: A, /* @args */ d: D, d2: D): void {}
+// _inject([A], test);
 ```
 
-transforms into
+or using magic Deps type:
 
 ```js
-// test.js
-export function test(depA: A, /* @args */d: D, d2: D): void {}
+// @flow
+import type {Deps} from 'babel-plugin-transform-metadata/Deps'
 
-_inject([A], test);
+export function test(deps: Deps<{
+    depA: A
+}>, d: D, d2: D): void {}
+// _inject([{depA: A}], test);
 ```
 
 For object-style arguments:
 
 ```js
-type W2Props = {
-    a: A
+// @flow
+type Props = {
+    a: A;
     /* @args */
-    ; d: D;
-    d2: D;
+    d: D;
 };
 
 class Widget2 {
-    constructor(props: W2Props) {}
+    constructor(props: Props) {}
 }
-
-// Generated:
-_inject([{
-    a: A
-}], Widget2);
+// _inject([{a: A}], Widget2);
 ```
 
-Example
--------
+Another way to separate call-time arguments is [type intersection](http://flowtype.org/docs/union-intersection-types.html#intersection-example)
+
+```js
+// @flow
+type Args = {
+    d: D;
+    d2: D;
+}
+
+type Props = Args & {
+    a: A
+};
+
+function test(t: Props) {}
+// _inject([{a: 'A'}], test)
+```
+
+Complex example
+---------------
 
 Transform code like this
 
