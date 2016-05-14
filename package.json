@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-transform-metadata",
   "version": "0.0.8",
-  "description": "Reflection metadata support for classes and functions",
+  "description": "Reflection metadata support for classes and functions with flowtype type aliases support",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
@@ -35,6 +35,8 @@
   },
   "keywords": [
     "metadata",
+    "reflection",
+    "interfaces",
     "dependency injection",
     "di",
     "modular"
@@ -45,9 +47,8 @@
     ".flowconfig",
     "README.md",
     "LICENSE",
-    "lib",
-    "dist",
-    "i"
+    "flow-typed",
+    "dist"
   ],
   "devDependencies": {
     "babel-cli": "^6.8.0",
