@@ -1,9 +1,9 @@
 babel-plugin-transform-metadata
 ===============================
 
-Reflection metadata support for classes and functions.
+Reflection metadata support for classes and functions with [flowtype](https://flowtype.org) type aliases support.
 
-[flowtype](https://flowtype.org) and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
+flowtype and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
 
 ```js
 // @flow
@@ -25,7 +25,7 @@ export function test(depA: SomeType): void {}
 
 Features
 
--	Can convert [flowtype](https://flowtype.org) type expressions to metadata.
+-	Can convert flowtype type expressions to metadata.
 -	Various way to store metdata: Reflection polyfill, Symbol or custom imported helper.
 -	Metadata provided for plain function and object-style arguments.
 -	Metadata provided only for exported classes and functions.
