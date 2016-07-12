@@ -39,6 +39,7 @@ type W2Part = {
 }
 type W2Props = W2Part & {
     a: A;
+    bc: Class<B>;
     ErrorableElement: Class<React$Component<void, {
         error: ?string|React$Component,
     }, void>>;

@@ -51,6 +51,7 @@ type W2Part = {
 };
 type W2Props = W2Part & {
     a: A;
+    bc: Class<B>;
     ErrorableElement: Class<React$Component<void, {
         error: ?string | React$Component
     }, void>>
@@ -64,7 +65,8 @@ class Widget2 {
 
 _inject([{
     a: A,
-    ErrorableElement: 'Class'
+    bc: B,
+    ErrorableElement: 'React$Component'
 }], Widget2);
 
 export { Widget2 };

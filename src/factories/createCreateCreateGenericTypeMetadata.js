@@ -15,6 +15,11 @@ export default function createCreateCreateGenericTypeMetadata(
             if (id.name === depsId) {
                 return createObjectTypeMetadata(annotation.typeParameters.params[0])
             }
+
+            if (id.name === 'Class') {
+                return createGenericTypeMetadata(annotation.typeParameters.params[0])
+            }
+
             if (!externalClassNames.has(id.name)) {
                 // console.log(externalClassNames)
                 return t.stringLiteral(id.name)
@@ -30,6 +35,7 @@ export default function createCreateCreateGenericTypeMetadata(
                 `${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`
                 )
             }
+
             const internalType = internalTypes.get(id.name)
             if (internalType) {
                 return createObjectTypeMetadata(internalType)
