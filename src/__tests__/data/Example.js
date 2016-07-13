@@ -34,10 +34,7 @@ export class Widget {
     }
 }
 
-type W2Part = {
-    d2: D;
-}
-type W2Props = W2Part & {
+interface W2Props {
     a: A;
     bc: Class<B>;
     ErrorableElement: Class<React$Component<void, {

@@ -13,6 +13,7 @@ export default function createCreateCreateObjectTypeMetadata(t, hasComment, deps
         return function createObjectTypeMetadata(annotation) {
             let properties = annotation.properties
             const types = annotation.types
+
             if (!properties && types && types.length) {
                 properties = types[types.length - 1].properties
             }

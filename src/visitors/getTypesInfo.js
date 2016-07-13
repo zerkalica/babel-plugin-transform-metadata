@@ -52,12 +52,17 @@ const getTypesInfo = {
         }
     },
 
-    TypeAlias(path, state) {
+    'TypeAlias|InterfaceDeclaration'(path, state) {
         const node = path.node
         const parent = path.parent
         state.externalClassNames.set(node.id.name, node.id.name)
         if (parent.type !== 'ExportNamedDeclaration') {
-            state.internalTypes.set(node.id.name, node.right)
+            state.internalTypes.set(
+                node.id.name,
+                node.type === 'TypeAlias'
+                    ? node.right
+                    : node.body
+                )
             return
         }
         const token = state.getUniqueTypeName('', node.id.name)

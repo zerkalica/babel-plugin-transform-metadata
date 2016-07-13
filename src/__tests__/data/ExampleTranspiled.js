@@ -46,10 +46,7 @@ _inject([{
     i: 'ITest.1013217576'
 }], Widget);
 
-type W2Part = {
-    d2: D
-};
-type W2Props = W2Part & {
+interface W2Props {
     a: A;
     bc: Class<B>;
     ErrorableElement: Class<React$Component<void, {
@@ -57,7 +54,7 @@ type W2Props = W2Part & {
     }, void>>
     /* @args */
     ; d: D;
-};
+}
 
 class Widget2 {
     constructor(props: W2Props) {}
