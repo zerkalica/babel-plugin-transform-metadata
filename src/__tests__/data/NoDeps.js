@@ -1,0 +1,5 @@
+// @flow
+
+class MyClass {
+    constructor() {}
+}

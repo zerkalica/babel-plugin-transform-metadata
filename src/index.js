@@ -6,57 +6,51 @@ import createCreateCreateGenericTypeMetadata from
     './factories/createCreateCreateGenericTypeMetadata'
 import createCreateCreateObjectTypeMetadata from './factories/createCreateCreateObjectTypeMetadata'
 import createTypeForAnnotations from './factories/createTypeForAnnotations'
-import createHasComment from './factories/createHasComment'
 import createGetUniqueTypeName from './factories/createGetUniqueTypeName'
 
 import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter'
 import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
 
-import createInjectorDeclaration from './metaCreators/createInjectorDeclaration'
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
 
 export default function babelPluginTransformMetadata({types: t}) {
     return {
         visitor: {
-            Program(path, {file, opts}) {
+            Program(path, {opts}) {
                 const getUniqueTypeName = createGetUniqueTypeName(
-                    opts.typeNameStrategy || 'fullPath'
+                    opts.typeNameStrategy || 'typeName'
                 )
                 const state = {
                     getUniqueTypeName,
-                    driverImport: opts.driverImport,
+                    reflectImport: opts.reflectImport,
                     ambiantTypeCastImport:
                         opts.ambiantTypeCastImport || 'babel-plugin-transform-metadata/_',
                     ambiantDepsImport:
                         opts.ambiantDepsImport || 'babel-plugin-transform-metadata/Deps',
 
                     lastImportPath: null,
-                    depsId: null,
+                    reservedGenerics: new Set(opts.reservedGenerics || ['Class', 'ResultOf']),
                     injectId: null,
                     ambiantTypeCast: null,
                     externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
-                    exportNames: new Map()
+                    exportNames: new Map(),
+                    rootFunctions: []
                 }
-                state.externalTypeNames.delete(state.depsId)
                 path.traverse(getTypesInfo, state)
-
                 const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
                     t,
                     state.externalTypeNames
                 )
-                const hasComment = createHasComment(opts.argComment || '@args')
                 const createCreateObjectTypeMetadata = createCreateCreateObjectTypeMetadata(
-                    t,
-                    hasComment,
-                    state.depsId
+                    t
                 )
                 const createCreateGenericTypeMetadata = createCreateCreateGenericTypeMetadata(
                     t,
                     state.externalTypeNames,
                     state.internalTypes,
-                    state.depsId,
+                    state.reservedGenerics,
                     state.externalClassNames
                 )
                 const typeForAnnotation = createTypeForAnnotation(
@@ -66,31 +60,32 @@ export default function babelPluginTransformMetadata({types: t}) {
                     createCreateGenericTypeMetadata
                 )
                 const typeForAnnotations = createTypeForAnnotations(
-                    hasComment,
-                    typeForAnnotation,
-                    state.depsId
+                    typeForAnnotation
                 )
 
-                const injectId = state.injectId || file.scope.generateUidIdentifier('inject')
-
+                let injectId = state.injectId
                 let injectorDeclaration = null
-                if (opts.metaDriver !== 'import' || !state.injectId) {
-                    injectorDeclaration = createInjectorDeclaration(
-                        t,
-                        opts.driverImport,
-                        opts.metaDriver || 'symbol',
-                        injectId,
-                        'design:paramtypes'
-                    )
+                if (!injectId && opts.reflectImport) {
+                    injectId = t.identifier('Driver')
+                    injectorDeclaration = t.importDeclaration(
+                       [t.importDefaultSpecifier(injectId)],
+                       t.stringLiteral(opts.reflectImport)
+                   )
                 }
 
-                const defineParamTypes = createInjectParamTypes(t, injectId, typeForAnnotations)
-
+                const defineParamTypes = createInjectParamTypes(
+                    t,
+                    injectId,
+                    typeForAnnotations,
+                    opts.paramKey || 'design:paramtypes',
+                    opts.typeKey || 'design:function'
+                )
                 const parentPathInsertAfter = createParentPathInsertAfter(defineParamTypes)
 
                 const reflectionState = {
                     magicTypeCasts: [],
                     parentPaths: [],
+                    onlyExports: opts.onlyExports || false,
                     exportNames: state.exportNames,
                     magicTypeCastExpression: state.ambiantTypeCast
                         ? state.ambiantTypeCast.node.specifiers[0].local.name
@@ -101,15 +96,17 @@ export default function babelPluginTransformMetadata({types: t}) {
 
                 reflectionState.magicTypeCasts.forEach(replaceMagicTypeCasts)
                 reflectionState.parentPaths.forEach(parentPathInsertAfter)
-                if (state.ambiantTypeCast) {
-                    state.ambiantTypeCast.remove()
-                }
+
                 if (injectorDeclaration) {
                     if (state.lastImportPath) {
                         state.lastImportPath.insertAfter(injectorDeclaration)
                     } else {
                         path.node.body.unshift(injectorDeclaration)
                     }
+                }
+
+                if (state.ambiantTypeCast) {
+                    state.ambiantTypeCast.remove()
                 }
             }
         }

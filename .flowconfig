@@ -19,6 +19,7 @@ examples/.*
 .*/node_modules/spdx.*
 .*/node_modules/u.*
 .*/node_modules/resol.*
+.*/src/__tests__.*
 
 [options]
 esproposal.decorators=ignore

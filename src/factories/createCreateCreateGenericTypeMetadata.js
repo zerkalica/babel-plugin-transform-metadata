@@ -1,22 +1,14 @@
-import generate from 'babel-generator'
-
-const TAG = '[babel-plugin-transform-metadata]'
-
 export default function createCreateCreateGenericTypeMetadata(
     t,
     externalTypeNames,
     internalTypes,
-    depsId,
+    reservedGenerics,
     externalClassNames
 ) {
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation) {
             let id = annotation.id
-            if (id.name === depsId) {
-                return createObjectTypeMetadata(annotation.typeParameters.params[0])
-            }
-
-            if (id.name === 'Class') {
+            if (reservedGenerics.has(id.name)) {
                 return createGenericTypeMetadata(annotation.typeParameters.params[0])
             }
 
@@ -28,12 +20,12 @@ export default function createCreateCreateGenericTypeMetadata(
             }
 
             if (annotation.typeParameters) {
-                const genericCode = generate(annotation).code
-                const plainCode = generate(annotation.id).code
+                // const genericCode = generate(annotation).code
+                // const plainCode = generate(annotation.id).code
                 /* eslint-disable no-console */
-                console.warn(
-                `${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`
-                )
+                // console.warn(
+                // `${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`
+                // )
             }
 
             const internalType = internalTypes.get(id.name)

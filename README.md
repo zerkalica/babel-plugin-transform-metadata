@@ -1,48 +1,107 @@
-babel-plugin-transform-metadata
-===============================
+# babel-plugin-transform-metadata
 
 Reflection metadata support for classes and functions with [flowtype](https://flowtype.org) type aliases support.
 
 flowtype and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
 
+Features:
+
+-   Can convert flowtype type expressions to metadata.
+-   Can import custom Reflection polyfill
+-   Metadata provided for plain function and object-style arguments
+-   Functions marked as 'design:function'
+-   With transform-decorators-legacy supports argument decorators
+
+## Example
+
 ```js
 // @flow
-import type {SomeType} from './types'
+import type {IT} from './imports/ITest'
+
 import _ from 'babel-plugin-transform-metadata/_'
 
-const types = [
-    [(_: SomeType), '213'] // converted to ['SomeType.<crc('types')>', '213']
-]
+class B<V> {}
+const f: number = 123
+
+interface Internal<V> {
+    s: string;
+    b: B<V>;
+}
+
+class A {
+    constructor(
+        @dec1 b: B<*>,
+        @dec2({k: 'test'}) e: IT,
+        i: Internal<*>,
+        some: typeof f
+    ) {}
+}
+
+function factory(): () => void {
+    return () => {}
+}
+
+type ResultOf<F> = _ResultOf<*, F>
+type _ResultOf<V, F: (...x: any[]) => V> = V
+
+function fn(a: A, b: Class<B>, f: ResultOf<factory>) {
+    function fn2(a: A) {
+    }
+}
+
+const id = (_: IT)
 ```
+
+Transpiled to:
 
 ```js
 // @flow
-import type {SomeType} from './types'
+import type { IT } from './imports/ITest';
 
-export function test(depA: SomeType): void {}
-// _inject(['SomeType.<crc('types')>'], test);
+let B = class B<V> {};
+
+const f: number = 123;
+
+interface Internal<V> {
+    s: string;
+    b: B<V>;
+}
+
+let A = class A {
+    constructor(b: B<*>, e: IT, i: Internal<*>, some: typeof f) {}
+};
+dec2({ k: 'test' })(A, null, 1);
+dec1(A, null, 0);
+Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
+    s: String,
+    b: B
+}, f], A);
+
+
+function factory(): () => void {
+    return () => {};
+}
+
+Reflect.defineMetadata('design:function', true, factory);
+type ResultOf<F> = _ResultOf<*, F>;
+type _ResultOf<V, F: (...x: any[]) => V> = V;
+
+function fn(a: A, b: Class<B>, f: ResultOf<factory>) {
+    function fn2(a: A) {}
+}
+
+Reflect.defineMetadata('design:function', true, fn);
+Reflect.defineMetadata('design:paramtypes', [A, B, factory], fn);
+const id = 'IT';
 ```
 
-Features
-
--	Can convert flowtype type expressions to metadata.
--	Various way to store metdata: Reflection polyfill, Symbol or custom imported helper.
--	Metadata provided for plain function and object-style arguments.
--	Metadata provided only for exported classes and functions.
-
-Why not [babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations) ?
-
-Main idea of babel-plugin-angular2-annotations is compability with [angular2](https://angular.io) in babel environment and contains unnecessary functionality: typescript-style decorators support. Interfaces not supported, only Reflection.defineMetadata used as polyfill, object-style arguments does not supported.
-
-.babelrc options
-----------------
+## .babelrc options
 
 Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
-
--	metaDriver: How to store metadata: import, symbol, reflection, property.
--	driverImport - If "metaDriver" = "import". Path to custom reflection polyfill.
--	argComment - magic comment text. After this comment all function or constructor args will not be included to metadata.
--	typeNameStrategy - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
+-   reservedGenerics: string[] - first arguments of this generics treated as dependency, default is ['Class', 'ResultOf']
+-   onlyExports: boolean - if true - add metadata only to exported function/classes
+-   driverImport: ?string - Path to import custom reflection polyfill.
+-   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
 
 Example .babelrc:
 
@@ -50,11 +109,11 @@ Example .babelrc:
 {
     "plugins": [
         "syntax-flow",
+        "transform-decorators-legacy",
         ["transform-metadata", {
-            "typeNameStrategy": "fullPath",
-            "argComment": "@args",
-            "metaDriver": "import",
-            "driverImport": "reactive-di/inject"
+            "reservedGenerics": ["Class", "ResultOf"],
+            "onlyExports": false,
+            "typeNameStrategy": "typeName"
         }]
     ]
 }
@@ -86,8 +145,6 @@ Ideally, set "typeNameStrategy": "fullPath" and always use absolute path for typ
 ```ini
 module.name_mapper='^babel-plugin-transform-metadata/i/\(.*\)' -> '<PROJECT_ROOT>/i/\1'
 ```
-
-Like this:
 
 ```js
 import type {T} from 'babel-plugin-transform-metadata/i/types'
@@ -128,362 +185,6 @@ Reflection.defineMetadata(['T.t2'], test2)
 
 If "typeNameStrategy" is "typeName", import paths will be ignored. But possible collisions with equal type names in different files.
 
-Exports
--------
+## Credits
 
-Metadata generated only for exports:
-
-```js
-export test
-export {widget}
-
-export default test2
-
-export class Test {}
-
-export function test2() {}
-```
-
-Object-style arguments
-----------------------
-
-In some cases we can't pass arguments as array, only as object (ex. react widgets).
-
-```js
-export class Widget {
-    constructor(props: {
-        a: A
-    }) {}
-}
-
-// Generated:
-_inject([{
-    a: A
-}], Widget);
-```
-
-For type aliases:
-
-```js
-type W2Props = {
-    a: A
-};
-
-class Widget2 {
-    constructor(props: W2Props) {}
-}
-
-// Generated:
-_inject([{
-    a: A
-}], Widget2);
-```
-
-But for exported type aliases:
-
-```js
-export type W2Props = {
-    a: A
-};
-
-class Widget2 {
-    constructor(props: W2Props) {}
-}
-
-// Generated:
-_inject(['W2Props'], Widget2);
-```
-
-Composable
-----------
-
-In some cases with [reactive-di](https://github.com/zerkalica/reactive-di) and react we need composable-style functions: mix dependencies and call-time arguments. '@args' comment separates di-dependencies from call-time arguments. After this comment arguments will not be included to reflection metadata.
-
-```js
-// @flow
-export function test(depA: A, /* @args */ d: D, d2: D): void {}
-// _inject([A], test);
-```
-
-or using magic Deps type:
-
-```js
-// @flow
-import type {Deps} from 'babel-plugin-transform-metadata/Deps'
-
-export function test(deps: Deps<{
-    depA: A
-}>, d: D, d2: D): void {}
-// _inject([{depA: A}], test);
-```
-
-For object-style arguments:
-
-```js
-// @flow
-type Props = {
-    a: A;
-    /* @args */
-    d: D;
-};
-
-class Widget2 {
-    constructor(props: Props) {}
-}
-// _inject([{a: A}], Widget2);
-```
-
-Another way to separate call-time arguments is [type intersection](http://flowtype.org/docs/union-intersection-types.html#intersection-example)
-
-```js
-// @flow
-type Args = {
-    d: D;
-    d2: D;
-}
-
-type Props = Args & {
-    a: A
-};
-
-function test(t: Props) {}
-// _inject([{a: 'A'}], test)
-```
-
-Complex example
----------------
-
-Transform code like this
-
-```js
-/* @flow */
-import D from './D'
-
-import type {ITest as IT} from '../../__tests__/data/ITest'
-import type {ITest as IT2} from './ITest'
-import type {ITest as IT3} from 'babel-plugin-transform-metadata/__tests__/data/ITest'
-
-import type {Deps} from 'babel-plugin-transform-metadata/Deps'
-
-import _ from 'babel-plugin-transform-metadata/_'
-
-export class A {}
-
-export class B {
-    a: A;
-
-    constructor(opts: {
-        d: D;
-        a: A;
-        i: IT;
-    }) {
-        this.a = opts.a
-    }
-}
-
-export class Widget {
-    constructor(props: {
-        a: A;
-        i: IT3;
-        /* @args */
-        d: D;
-        d2: D;
-    }) {
-    }
-}
-
-type W2Part = {
-    d2: D;
-}
-type W2Props = W2Part & {
-    a: A;
-    ErrorableElement: Class<React$Component<void, {
-        error: ?string|React$Component,
-    }, void>>;
-    /* @args */
-    d: D;
-}
-
-class Widget2 {
-    constructor(props: W2Props) {}
-}
-
-export {Widget2}
-
-type W3Props = {
-    deps: Deps<{
-        a: A;
-    }>;
-    d: D;
-    d2: D;
-}
-
-class Widget3 {
-    constructor(props: W3Props) {}
-}
-
-export {Widget3}
-
-
-export type R<V> = {
-    some: V;
-}
-
-export class C<V> {
-    b: B;
-
-    constructor(b: B, r: R<V>, i: IT, i2: IT2) {
-        this.b = b
-    }
-}
-
-function test<F: Object>(depA: A, f: F, /* @args */ d: D, d2: D): void {}
-
-export default test
-
-export function test2(deps: Deps<{a: A}>, d: D, d2: D): void {}
-
-const types = [
-    [(_: R), '213'],
-    [(_: IT3), '321']
-]
-
-type ErrorableElementProps = {
-    /* @args */
-    children: React$Element;
-    error?: React$Element;
-}
-
-export function ErrorableElement({children, error}: ErrorableElementProps) {}
-```
-
-to this:
-
-```js
-/* @flow */
-import D from './D';
-
-import type { ITest as IT } from '../../__tests__/data/ITest';
-import type { ITest as IT2 } from './ITest';
-import type { ITest as IT3 } from 'babel-plugin-transform-metadata/__tests__/data/ITest';
-
-import type { Deps } from 'babel-plugin-transform-metadata/Deps';
-
-function _inject(params, target: any) {
-    target[Symbol.for('design:paramtypes')] = params;
-}
-
-export class A {}
-
-export class B {
-    a: A;
-
-    constructor(opts: {
-        d: D;
-        a: A;
-        i: IT;
-    }) {
-        this.a = opts.a;
-    }
-}
-
-_inject([{
-    d: D,
-    a: A,
-    i: 'ITest.3402154763'
-}], B);
-
-export class Widget {
-    constructor(props: {
-        a: A;
-        i: IT3
-        /* @args */
-        ; d: D;
-        d2: D;
-    }) {}
-}
-
-_inject([{
-    a: A,
-    i: 'ITest.1013217576'
-}], Widget);
-
-type W2Part = {
-    d2: D
-};
-type W2Props = W2Part & {
-    a: A;
-    ErrorableElement: Class<React$Component<void, {
-        error: ?string | React$Component
-    }, void>>
-    /* @args */
-    ; d: D;
-};
-
-class Widget2 {
-    constructor(props: W2Props) {}
-}
-
-_inject([{
-    a: A,
-    ErrorableElement: 'Class'
-}], Widget2);
-
-export { Widget2 };
-
-type W3Props = {
-    deps: Deps<{
-        a: A
-    }>;
-    d: D;
-    d2: D;
-};
-
-class Widget3 {
-    constructor(props: W3Props) {}
-}
-
-_inject([{
-    a: A
-}], Widget3);
-
-export { Widget3 };
-
-export type R<V> = {
-    some: V
-};
-
-export class C<V> {
-    b: B;
-
-    constructor(b: B, r: R<V>, i: IT, i2: IT2) {
-        this.b = b;
-    }
-}
-
-_inject([B, 'R', 'ITest.3402154763', 'ITest.3402154763'], C);
-
-function test<F: Object>(depA: A, f: F, /* @args */d: D, d2: D): void {}
-
-_inject([A, 'F'], test);
-
-export default test;
-
-export function test2(deps: Deps<{ a: A }>, d: D, d2: D): void {}
-
-_inject([{
-    a: A
-}], test2);
-
-const types = [['R', '213'], ['ITest.1013217576', '321']];
-
-type ErrorableElementProps = {
-    /* @args */
-    children: React$Element;
-    error?: React$Element;
-};
-
-export function ErrorableElement({ children, error }: ErrorableElementProps) {}
-
-_inject([{}], ErrorableElement);
-```
+[babel-plugin-angular2-annotations](https://github.com/shuhei/babel-plugin-angular2-annotations)

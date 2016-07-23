@@ -3,7 +3,7 @@ const getTypesInfo = {
         /* eslint-disable no-param-reassign */
         const node = path.node
         const strPath = node.source.value
-        if (strPath === state.driverImport) {
+        if (strPath === state.reflectImport) {
             state.injectId = node.specifiers[0].local
         }
         if (strPath === state.ambiantTypeCastImport) {
@@ -11,13 +11,23 @@ const getTypesInfo = {
         } else {
             state.lastImportPath = path
         }
-        if (strPath === state.ambiantDepsImport) {
-            state.depsId = node.specifiers[0].local.name
-        }
     },
 
-    ClassDeclaration(path, state) {
+    'VariableDeclaration'(path, state) {
         const node = path.node
+        const decls = node.declarations[0]
+        state.externalClassNames.set(decls.id.name, decls.id.name)
+    },
+
+    'ClassDeclaration|FunctionDeclaration'(path, state) {
+        const node = path.node
+        if (path.parent.type !== 'Program') {
+            return
+        }
+
+        if (node.type === 'FunctionDeclaration') {
+            state.rootFunctions.push(path)
+        }
         state.externalClassNames.set(node.id.name, node.id.name)
     },
 

@@ -20,6 +20,8 @@ export default function createTypeForAnnotation(
                 return t.identifier('Boolean');
             case 'VoidTypeAnnotation':
                 return t.unaryExpression('void', t.numericLiteral(0));
+            case 'TypeofTypeAnnotation':
+                return createGenericTypeMetadata(annotation.argument)
             case 'GenericTypeAnnotation':
                 return createGenericTypeMetadata(annotation)
             case 'ObjectTypeAnnotation':
