@@ -21,14 +21,14 @@ const getTypesInfo = {
 
     'ClassDeclaration|FunctionDeclaration'(path, state) {
         const node = path.node
-        if (path.parent.type !== 'Program') {
-            return
+        const pt = path.parent.type
+        if (
+            pt === 'Program'
+            || pt === 'ExportNamedDeclaration'
+            || pt === 'ExportDefaultDeclaration'
+        ) {
+            state.externalClassNames.set(node.id.name, node.id.name)
         }
-
-        if (node.type === 'FunctionDeclaration') {
-            state.rootFunctions.push(path)
-        }
-        state.externalClassNames.set(node.id.name, node.id.name)
     },
 
     'ImportSpecifier|ImportDefaultSpecifier'(path, state) {

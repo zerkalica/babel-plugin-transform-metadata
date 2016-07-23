@@ -100,7 +100,7 @@ const id = 'IT';
 Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
 -   reservedGenerics: string[] - first arguments of this generics treated as dependency, default is ['Class', 'ResultOf']
 -   onlyExports: boolean - if true - add metadata only to exported function/classes
--   driverImport: ?string - Path to import custom reflection polyfill.
+-   reflectImport: ?string - Path to import custom reflection polyfill.
 -   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
 
 Example .babelrc:

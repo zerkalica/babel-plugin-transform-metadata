@@ -35,8 +35,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
-                    exportNames: new Map(),
-                    rootFunctions: []
+                    exportNames: new Map()
                 }
                 path.traverse(getTypesInfo, state)
                 const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
