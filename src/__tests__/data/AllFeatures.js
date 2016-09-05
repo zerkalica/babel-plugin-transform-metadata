@@ -3,6 +3,8 @@ import type {IT} from './imports/ITest'
 
 import _ from 'babel-plugin-transform-metadata/_'
 
+import {Component as ReactComponent} from 'react'
+
 class B<V> {}
 const f: number = 123
 
@@ -19,6 +21,8 @@ class A {
         some: typeof f
     ) {}
 }
+interface State {p: number}
+class ComponentE extends ReactComponent<Props, Props, State> {}
 
 function factory(): () => void {
     return () => {}

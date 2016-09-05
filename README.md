@@ -11,6 +11,7 @@ Features:
 -   Metadata provided for plain function and object-style arguments
 -   Functions marked as 'design:function'
 -   With transform-decorators-legacy supports argument decorators
+-   Can extract metadata from react state definition in component
 
 ## Example
 
@@ -19,6 +20,8 @@ Features:
 import type {IT} from './imports/ITest'
 
 import _ from 'babel-plugin-transform-metadata/_'
+
+import {Component as ReactComponent} from 'react'
 
 class B<V> {}
 const f: number = 123
@@ -36,6 +39,8 @@ class A {
         some: typeof f
     ) {}
 }
+interface State {p: number}
+class ComponentE extends ReactComponent<Props, Props, State> {}
 
 function factory(): () => void {
     return () => {}
@@ -58,6 +63,8 @@ Transpiled to:
 // @flow
 import type { IT } from './imports/ITest';
 
+import { Component as ReactComponent } from 'react';
+
 let B = class B<V> {};
 
 const f: number = 123;
@@ -76,6 +83,12 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
     s: String,
     b: B
 }, f], A);
+
+interface State { p: number }
+let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {};
+Reflect.defineMetadata('design:paramtypes', [{
+    p: Number
+}], ComponentE);
 
 
 function factory(): () => void {
@@ -102,6 +115,7 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
 -   onlyExports: boolean - if true - add metadata only to exported function/classes
 -   reflectImport: ?string - Path to import custom reflection polyfill.
 -   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
+-   depsPositions: from which position of extendable class generic get dependency definition, usefull with react components
 
 Example .babelrc:
 
@@ -113,7 +127,19 @@ Example .babelrc:
         ["transform-metadata", {
             "reservedGenerics": ["Class", "ResultOf"],
             "onlyExports": false,
-            "typeNameStrategy": "typeName"
+            "typeNameStrategy": "typeName",
+            "depsPositions": [
+                {
+                    "import": "fake-react",
+                    "name": "Component",
+                    "pos": 1
+                },
+                {
+                    "import": "react",
+                    "name": "React|Component",
+                    "pos": 2
+                }
+            ]
         }]
     ]
 }

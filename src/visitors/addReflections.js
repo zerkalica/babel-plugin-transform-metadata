@@ -7,7 +7,7 @@ const addReflections = {
 
     'ClassDeclaration|FunctionDeclaration'(
         path,
-        {onlyExports, parentPaths, exportNames}
+        {t, detectDepIndexByNodeSuperClass, onlyExports, parentPaths, exportNames}
     ) {
         const node = path.node
         const parent = path.parent
@@ -25,17 +25,34 @@ const addReflections = {
         }
 
         if (node.type === 'ClassDeclaration') {
-            const body = node.body.body
-            for (let i = 0; i < body.length; i++) {
-                const bodyNode = body[i]
-                if (
-                    bodyNode.type === 'ClassMethod'
-                    && bodyNode.kind === 'constructor'
-                ) {
-                    params = bodyNode.params
-                    break
-                } else if (bodyNode.type === 'ClassProperty') {
-                    // @todo parameters from props
+            if (node.superTypeParameters && node.superClass) {
+                const sc = node.superClass
+                const depExtractIndex = detectDepIndexByNodeSuperClass(
+                    sc.name || sc.object.name
+                )
+                if (depExtractIndex !== null) {
+                    const np = node.superTypeParameters.params
+                    if (np && np.length > depExtractIndex) {
+                        const typedId = path.scope.generateUidIdentifier('deps')
+                        typedId.typeAnnotation = np[depExtractIndex]
+                        params = [t.typeAnnotation(typedId)]
+                    }
+                }
+            }
+
+            if (!params) {
+                const body = node.body.body
+                for (let i = 0; i < body.length; i++) {
+                    const bodyNode = body[i]
+                    if (
+                        bodyNode.type === 'ClassMethod'
+                        && bodyNode.kind === 'constructor'
+                    ) {
+                        params = bodyNode.params
+                        break
+                    } else if (bodyNode.type === 'ClassProperty') {
+                        // @todo parameters from props
+                    }
                 }
             }
         } else {

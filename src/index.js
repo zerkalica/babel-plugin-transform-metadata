@@ -12,26 +12,56 @@ import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter
 import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
 
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
+import createDetectDepIndexByNodeSuperClass from './factories/createDetectDepIndexByNodeSuperClass'
+
+const defaults = {
+    reflectImport: null,
+    typeNameStrategy: 'typeName',
+    paramKey: 'design:paramtypes',
+    typeKey: 'design:function',
+    onlyExports: false,
+    ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
+    ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
+    reservedGenerics: ['Class', 'ResultOf'],
+    depsPositions: [
+        {
+            import: 'fake-react',
+            name: 'Component',
+            pos: 1
+        },
+        {
+            import: 'react',
+            name: 'React|Component',
+            pos: 2
+        }
+    ]
+}
+
+function mapMasks(dp) {
+    return {
+        ...dp,
+        name: new RegExp('^' + dp.name + '$', 'g')
+    }
+}
 
 export default function babelPluginTransformMetadata({types: t}) {
     return {
         visitor: {
             Program(path, {opts}) {
-                const getUniqueTypeName = createGetUniqueTypeName(
-                    opts.typeNameStrategy || 'typeName'
-                )
+                const cnf = {...defaults, ...opts}
+                cnf.depsPositions = cnf.depsPositions.map(mapMasks)
+                const getUniqueTypeName = createGetUniqueTypeName(cnf.typeNameStrategy)
                 const state = {
                     getUniqueTypeName,
-                    reflectImport: opts.reflectImport,
-                    ambiantTypeCastImport:
-                        opts.ambiantTypeCastImport || 'babel-plugin-transform-metadata/_',
-                    ambiantDepsImport:
-                        opts.ambiantDepsImport || 'babel-plugin-transform-metadata/Deps',
+                    reflectImport: cnf.reflectImport,
+                    ambiantTypeCastImport: cnf.ambiantTypeCastImport,
+                    ambiantDepsImport: cnf.ambiantDepsImport,
 
                     lastImportPath: null,
-                    reservedGenerics: new Set(opts.reservedGenerics || ['Class', 'ResultOf']),
+                    reservedGenerics: new Set(cnf.reservedGenerics),
                     injectId: null,
                     ambiantTypeCast: null,
+                    imports: new Map(),
                     externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
@@ -64,11 +94,11 @@ export default function babelPluginTransformMetadata({types: t}) {
 
                 let injectId = state.injectId
                 let injectorDeclaration = null
-                if (!injectId && opts.reflectImport) {
+                if (!injectId && cnf.reflectImport) {
                     injectId = t.identifier('Driver')
                     injectorDeclaration = t.importDeclaration(
                        [t.importDefaultSpecifier(injectId)],
-                       t.stringLiteral(opts.reflectImport)
+                       t.stringLiteral(cnf.reflectImport)
                    )
                 }
 
@@ -76,15 +106,19 @@ export default function babelPluginTransformMetadata({types: t}) {
                     t,
                     injectId,
                     typeForAnnotations,
-                    opts.paramKey || 'design:paramtypes',
-                    opts.typeKey || 'design:function'
+                    cnf.paramKey,
+                    cnf.typeKey
                 )
                 const parentPathInsertAfter = createParentPathInsertAfter(defineParamTypes)
-
                 const reflectionState = {
+                    t,
+                    detectDepIndexByNodeSuperClass: createDetectDepIndexByNodeSuperClass(
+                        state.imports,
+                        cnf.depsPositions
+                    ),
                     magicTypeCasts: [],
                     parentPaths: [],
-                    onlyExports: opts.onlyExports || false,
+                    onlyExports: cnf.onlyExports,
                     exportNames: state.exportNames,
                     magicTypeCastExpression: state.ambiantTypeCast
                         ? state.ambiantTypeCast.node.specifiers[0].local.name

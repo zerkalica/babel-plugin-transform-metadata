@@ -10,6 +10,7 @@ const pluginPath = path.join(__dirname, '..', '..', 'dist', 'index.js')
 
 const babelConfig = {
     plugins: [
+        'syntax-jsx',
         'transform-decorators-legacy',
         'syntax-flow',
         'syntax-decorators',

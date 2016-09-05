@@ -37,7 +37,7 @@ const getTypesInfo = {
         const importedName = node.type === 'ImportDefaultSpecifier'
             ? node.local.name
             : node.imported.name
-
+        state.imports.set(node.local.name, {importedName, source: parent.source.value})
         state.externalClassNames.set(node.local.name, importedName)
         if (parent.importKind !== 'type') {
             return

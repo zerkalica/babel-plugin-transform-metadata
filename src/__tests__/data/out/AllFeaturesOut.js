@@ -1,6 +1,8 @@
 // @flow
 import type { IT } from './imports/ITest';
 
+import { Component as ReactComponent } from 'react';
+
 let B = class B<V> {};
 
 const f: number = 123;
@@ -19,6 +21,12 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
     s: String,
     b: B
 }, f], A);
+
+interface State { p: number }
+let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {};
+Reflect.defineMetadata('design:paramtypes', [{
+    p: Number
+}], ComponentE);
 
 
 function factory(): () => void {
