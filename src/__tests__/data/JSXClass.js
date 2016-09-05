@@ -12,14 +12,28 @@ class ComponentB {
     }
 }
 
+interface State {
+    p: number;
+}
+
 const ComponentC = () => <div><ComponentB/></div>
 
 function ComponentE() {
-    return <div>E</div>
+    const b = {a: [<div>E</div>]}
 }
 
-function ComponentFFactory() {
+function ComponentFFactory1(state: State) {
     return () => <div>F</div>
+}
+
+function ComponentFFactory2({p}: State) {
+    return () => <div>F</div>
+}
+
+function ComponentFFactory3({p}: State) {
+    return function componentf() {
+        return <div>F</div>
+    }
 }
 
 class ComponentD {

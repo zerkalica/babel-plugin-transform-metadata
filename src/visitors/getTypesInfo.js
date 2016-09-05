@@ -31,6 +31,37 @@ const getTypesInfo = {
         }
     },
 
+    JSXElement(path, state) {
+        if (path.parent.type === 'JSXElement') {
+            return
+        }
+
+        let funcScope = path.scope
+        let found = false
+        while (!found) {
+            funcScope = funcScope.getFunctionParent()
+            const funcPath = funcScope.path
+            const funcNode = funcPath.node
+            if (funcPath.isProgram()) {
+                break
+            }
+
+            switch (funcNode.type) {
+                case 'ClassMethod':
+                    state.functionsWithJsx.add(funcNode)
+                    found = true
+                    break
+                default:
+                    if (funcPath.parent.type === 'Program') {
+                        state.functionsWithJsx.add(funcNode)
+                        found = true
+                    }
+                    break
+            }
+            funcScope = funcScope.parent
+        }
+    },
+
     'ImportSpecifier|ImportDefaultSpecifier'(path, state) {
         const node = path.node
         const parent = path.parent

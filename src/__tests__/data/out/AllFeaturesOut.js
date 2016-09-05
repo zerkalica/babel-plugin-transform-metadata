@@ -23,7 +23,13 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
 }, f], A);
 
 interface State { p: number }
-let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {};
+let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {
+    render() {
+        const __h = this.__h;
+
+        return <br />;
+    }
+};
 Reflect.defineMetadata('design:paramtypes', [{
     p: Number
 }], ComponentE);

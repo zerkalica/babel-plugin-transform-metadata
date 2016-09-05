@@ -13,6 +13,7 @@ import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts
 
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
 import createDetectDepIndexByNodeSuperClass from './factories/createDetectDepIndexByNodeSuperClass'
+import createInsertFactory from './factories/createInsertFactory'
 
 const defaults = {
     reflectImport: null,
@@ -23,6 +24,7 @@ const defaults = {
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
     ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
     reservedGenerics: ['Class', 'ResultOf'],
+    jsxPragma: '__h',
     depsPositions: [
         {
             import: 'fake-react',
@@ -45,11 +47,14 @@ function mapMasks(dp) {
 }
 
 export default function babelPluginTransformMetadata({types: t}) {
+    let cnf
     return {
         visitor: {
             Program(path, {opts}) {
-                const cnf = {...defaults, ...opts}
-                cnf.depsPositions = cnf.depsPositions.map(mapMasks)
+                if (!cnf) {
+                    cnf = {...defaults, ...opts}
+                    cnf.depsPositions = cnf.depsPositions.map(mapMasks)
+                }
                 const getUniqueTypeName = createGetUniqueTypeName(cnf.typeNameStrategy)
                 const state = {
                     getUniqueTypeName,
@@ -65,7 +70,8 @@ export default function babelPluginTransformMetadata({types: t}) {
                     externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
-                    exportNames: new Map()
+                    exportNames: new Map(),
+                    functionsWithJsx: new Set()
                 }
                 path.traverse(getTypesInfo, state)
                 const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
@@ -129,6 +135,9 @@ export default function babelPluginTransformMetadata({types: t}) {
 
                 reflectionState.magicTypeCasts.forEach(replaceMagicTypeCasts)
                 reflectionState.parentPaths.forEach(parentPathInsertAfter)
+                if (cnf.jsxPragma) {
+                    state.functionsWithJsx.forEach(createInsertFactory(t, cnf.jsxPragma))
+                }
 
                 if (injectorDeclaration) {
                     if (state.lastImportPath) {

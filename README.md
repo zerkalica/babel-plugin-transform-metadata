@@ -40,7 +40,11 @@ class A {
     ) {}
 }
 interface State {p: number}
-class ComponentE extends ReactComponent<Props, Props, State> {}
+class ComponentE extends ReactComponent<Props, Props, State> {
+    render() {
+        return <br/>
+    }
+}
 
 function factory(): () => void {
     return () => {}
@@ -85,7 +89,13 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
 }, f], A);
 
 interface State { p: number }
-let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {};
+let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {
+    render() {
+        const __h = this.__h;
+
+        return <br />;
+    }
+};
 Reflect.defineMetadata('design:paramtypes', [{
     p: Number
 }], ComponentE);
@@ -116,6 +126,7 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
 -   reflectImport: ?string - Path to import custom reflection polyfill.
 -   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
 -   depsPositions: from which position of extendable class generic get dependency definition, usefull with react components
+-   jsxPragma - if not empty - generate ```this.__h``` in beginning of method
 
 Example .babelrc:
 
@@ -128,6 +139,7 @@ Example .babelrc:
             "reservedGenerics": ["Class", "ResultOf"],
             "onlyExports": false,
             "typeNameStrategy": "typeName",
+            "jsxPragma": "__h",
             "depsPositions": [
                 {
                     "import": "fake-react",

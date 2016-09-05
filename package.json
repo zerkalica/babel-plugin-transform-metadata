@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "babel-generator": "^6.14.0",
+    "babylon": "^6.9.1",
     "crc": "^3.4.0"
   }
 }

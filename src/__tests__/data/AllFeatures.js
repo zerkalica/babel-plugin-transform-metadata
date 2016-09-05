@@ -22,7 +22,11 @@ class A {
     ) {}
 }
 interface State {p: number}
-class ComponentE extends ReactComponent<Props, Props, State> {}
+class ComponentE extends ReactComponent<Props, Props, State> {
+    render() {
+        return <br/>
+    }
+}
 
 function factory(): () => void {
     return () => {}
