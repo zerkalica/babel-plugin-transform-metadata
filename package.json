@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-metadata",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Reflection metadata support for classes and functions with flowtype type aliases support",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
