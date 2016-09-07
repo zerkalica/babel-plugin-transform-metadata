@@ -22,19 +22,16 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
     b: B
 }, f], A);
 
-interface State { p: number }
-let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {
-    render() {
-        const __h = this.__h;
 
-        return <br />;
-    }
-};
+interface State { s: number }
+function ComponentD(rec: { p: number }, state: State, __h) {
+    return <div>AA</div>;
+}
+
+Reflect.defineMetadata('design:function', true, ComponentD);
 Reflect.defineMetadata('design:paramtypes', [{
-    p: Number
-}], ComponentE);
-
-
+    s: Number
+}], ComponentD);
 function factory(): () => void {
     return () => {};
 }

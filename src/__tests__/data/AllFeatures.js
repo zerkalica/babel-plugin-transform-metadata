@@ -21,11 +21,10 @@ class A {
         some: typeof f
     ) {}
 }
-interface State {p: number}
-class ComponentE extends ReactComponent<Props, Props, State> {
-    render() {
-        return <br/>
-    }
+
+interface State {s: number}
+function ComponentD(rec: {p: number}, state: State) {
+    return <div>AA</div>
 }
 
 function factory(): () => void {

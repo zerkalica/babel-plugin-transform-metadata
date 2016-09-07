@@ -1,44 +1,22 @@
 // @flow
 
-class ComponentA {
-    render() {
-        return <div>a</div>
-    }
+function ComponentA(rec: {p: number}, state: {s: number}, h) {
+    return <div>AA</div>
 }
 
-class ComponentB {
-    render() {
-        return <div><ComponentA/>b</div>
-    }
-}
+const ComponentB = (props, state: {s: number}) => <div>qwe</div>
 
-interface State {
-    p: number;
+const ComponentC = function ComponentC(props, state: {ss: number}) {
+    return <div></div>
 }
-
-const ComponentC = () => <div><ComponentB/></div>
 
 function ComponentE() {
     const b = {a: [<div>E</div>]}
 }
 
-function ComponentFFactory1(state: State) {
-    return () => <div>F</div>
+function ComponentD(rec: {p: number}) {
+    return <div>AA</div>
 }
 
-function ComponentFFactory2({p}: State) {
-    return () => <div>F</div>
-}
 
-function ComponentFFactory3({p}: State) {
-    return function componentf() {
-        return <div>F</div>
-    }
-}
-
-class ComponentD {
-    render() {
-        const c = <div><ComponentA/>b</div>
-        return c
-    }
-}
+const ComponentF = () => <div>qwe</div>

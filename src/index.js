@@ -12,8 +12,7 @@ import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter
 import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
 
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
-import createDetectDepIndexByNodeSuperClass from './factories/createDetectDepIndexByNodeSuperClass'
-import createInsertFactory from './factories/createInsertFactory'
+import createInsertFactory from './modifiers/createInsertFactory'
 
 const defaults = {
     reflectImport: null,
@@ -24,26 +23,7 @@ const defaults = {
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
     ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
     reservedGenerics: ['Class', 'ResultOf'],
-    jsxPragma: '__h',
-    depsPositions: [
-        {
-            import: 'fake-react',
-            name: 'Component',
-            pos: 1
-        },
-        {
-            import: 'react',
-            name: 'React|Component',
-            pos: 2
-        }
-    ]
-}
-
-function mapMasks(dp) {
-    return {
-        ...dp,
-        name: new RegExp('^' + dp.name + '$', 'g')
-    }
+    jsxPragma: '__h'
 }
 
 export default function babelPluginTransformMetadata({types: t}) {
@@ -53,7 +33,6 @@ export default function babelPluginTransformMetadata({types: t}) {
             Program(path, {opts}) {
                 if (!cnf) {
                     cnf = {...defaults, ...opts}
-                    cnf.depsPositions = cnf.depsPositions.map(mapMasks)
                 }
                 const getUniqueTypeName = createGetUniqueTypeName(cnf.typeNameStrategy)
                 const state = {
@@ -66,8 +45,6 @@ export default function babelPluginTransformMetadata({types: t}) {
                     reservedGenerics: new Set(cnf.reservedGenerics),
                     injectId: null,
                     ambiantTypeCast: null,
-                    imports: new Map(),
-                    externalClassNames: new Map(),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
                     exportNames: new Map(),
@@ -85,8 +62,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     t,
                     state.externalTypeNames,
                     state.internalTypes,
-                    state.reservedGenerics,
-                    state.externalClassNames
+                    state.reservedGenerics
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
@@ -108,20 +84,17 @@ export default function babelPluginTransformMetadata({types: t}) {
                    )
                 }
 
-                const defineParamTypes = createInjectParamTypes(
+                const injectParamTypes = createInjectParamTypes(
                     t,
                     injectId,
                     typeForAnnotations,
                     cnf.paramKey,
-                    cnf.typeKey
+                    cnf.typeKey,
+                    state.functionsWithJsx
                 )
-                const parentPathInsertAfter = createParentPathInsertAfter(defineParamTypes)
+                const parentPathInsertAfter = createParentPathInsertAfter(injectParamTypes)
                 const reflectionState = {
                     t,
-                    detectDepIndexByNodeSuperClass: createDetectDepIndexByNodeSuperClass(
-                        state.imports,
-                        cnf.depsPositions
-                    ),
                     magicTypeCasts: [],
                     parentPaths: [],
                     onlyExports: cnf.onlyExports,

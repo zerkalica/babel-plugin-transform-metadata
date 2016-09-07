@@ -3,16 +3,23 @@ export default function createInjectParamTypes(
     reflectId,
     typeForAnnotations,
     paramKey,
-    typeKey
+    typeKey,
+    functionsWithJsx
 ) {
     const metaDataId = t.memberExpression(
         reflectId || t.identifier('Reflect'),
         t.identifier('defineMetadata')
     )
-
-    return function defineMetadata(types, target, type) {
+    // console.log(functionsWithJsx)
+    return function injectParamTypes(rawTypes, target, type, path) {
         const body = []
-        if (types.length) {
+        if (rawTypes.length) {
+            let types
+            if (functionsWithJsx.has(path.node)) {
+                types = rawTypes.length > 1 ? [rawTypes[1]] : []
+            } else {
+                types = rawTypes
+            }
             const typeArgs = typeForAnnotations(types)
             if (typeArgs.length) {
                 body.push(t.expressionStatement(t.callExpression(
@@ -41,7 +48,11 @@ export default function createInjectParamTypes(
             }
         }
 
-        if (type === 'FunctionDeclaration') {
+        if (
+            type === 'FunctionDeclaration'
+            || type === 'FunctionExpression'
+            || type === 'ArrowFunctionExpression'
+        ) {
             body.push(
                 t.expressionStatement(t.callExpression(
                     metaDataId,

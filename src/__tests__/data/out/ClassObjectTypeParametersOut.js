@@ -6,6 +6,6 @@ let MyClass = class MyClass {
     }) {}
 };
 Reflect.defineMetadata("design:paramtypes", [{
-    a: "A",
+    a: A,
     b: String
 }], MyClass);

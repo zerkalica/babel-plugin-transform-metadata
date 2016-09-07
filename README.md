@@ -1,17 +1,28 @@
 # babel-plugin-transform-metadata
 
-Reflection metadata support for classes and functions with [flowtype](https://flowtype.org) type aliases support.
+Strict and smart reflection metadata generator for classes and functions from [flowtype](https://flowtype.org) metadata.
+
+-   Supports arrows and function expressions
+-   Can use custom Reflection polyfill
+-   Metadata provided for array and object-style arguments
+-   Functions marked as 'design:function'
+-   With transform-decorators-legacy supports argument decorators
+-   Adds createElement as third argument to each function with jsx, used in [reactive-di](https://github.com/zerkalica/reactive-di) components: (props, state, h) => React$Element
 
 flowtype and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
 
-Features:
+```js
+// @flow
+import _ from 'babel-plugin-transform-metadata/_'
+const id = (_: IT)
+```
 
--   Can convert flowtype type expressions to metadata.
--   Can import custom Reflection polyfill
--   Metadata provided for plain function and object-style arguments
--   Functions marked as 'design:function'
--   With transform-decorators-legacy supports argument decorators
--   Can extract metadata from react state definition in component
+converted to:
+
+```js
+// @flow
+const id = 'IT'
+```
 
 ## Example
 
@@ -39,11 +50,10 @@ class A {
         some: typeof f
     ) {}
 }
-interface State {p: number}
-class ComponentE extends ReactComponent<Props, Props, State> {
-    render() {
-        return <br/>
-    }
+
+interface State {s: number}
+function ComponentD(rec: {p: number}, state: State) {
+    return <div>AA</div>
 }
 
 function factory(): () => void {
@@ -88,19 +98,16 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
     b: B
 }, f], A);
 
-interface State { p: number }
-let ComponentE = class ComponentE extends ReactComponent<Props, Props, State> {
-    render() {
-        const __h = this.__h;
 
-        return <br />;
-    }
-};
+interface State { s: number }
+function ComponentD(rec: { p: number }, state: State, __h) {
+    return <div>AA</div>;
+}
+
+Reflect.defineMetadata('design:function', true, ComponentD);
 Reflect.defineMetadata('design:paramtypes', [{
-    p: Number
-}], ComponentE);
-
-
+    s: Number
+}], ComponentD);
 function factory(): () => void {
     return () => {};
 }
@@ -125,8 +132,7 @@ Add before babel-plugin-transform-decorators-legacy and other transformation plu
 -   onlyExports: boolean - if true - add metadata only to exported function/classes
 -   reflectImport: ?string - Path to import custom reflection polyfill.
 -   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
--   depsPositions: from which position of extendable class generic get dependency definition, usefull with react components
--   jsxPragma - if not empty - generate ```this.__h``` in beginning of method
+-   jsxPragma - createElement factory name, used for [reactive-di](https://github.com/zerkalica/reactive-di) components
 
 Example .babelrc:
 
@@ -139,19 +145,7 @@ Example .babelrc:
             "reservedGenerics": ["Class", "ResultOf"],
             "onlyExports": false,
             "typeNameStrategy": "typeName",
-            "jsxPragma": "__h",
-            "depsPositions": [
-                {
-                    "import": "fake-react",
-                    "name": "Component",
-                    "pos": 1
-                },
-                {
-                    "import": "react",
-                    "name": "React|Component",
-                    "pos": 2
-                }
-            ]
+            "jsxPragma": "__h"
         }]
     ]
 }

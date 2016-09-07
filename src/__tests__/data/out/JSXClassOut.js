@@ -1,67 +1,36 @@
 // @flow
 
-let ComponentA = class ComponentA {
-    render() {
-        const __h = this.__h;
-
-        return <div>a</div>;
-    }
-};
-let ComponentB = class ComponentB {
-    render() {
-        const __h = this.__h;
-
-        return <div><ComponentA />b</div>;
-    }
-};
-
-
-interface State {
-    p: number
+function ComponentA(rec: { p: number }, state: { s: number }, h) {
+    return <div>AA</div>;
 }
 
-const ComponentC = () => <div><ComponentB /></div>;
+Reflect.defineMetadata("design:function", true, ComponentA);
+Reflect.defineMetadata("design:paramtypes", [{
+    s: Number
+}], ComponentA);
+const ComponentB = (props, state: { s: number }, __h) => <div>qwe</div>;
 
-function ComponentE() {
+Reflect.defineMetadata("design:function", true, ComponentB);
+Reflect.defineMetadata("design:paramtypes", [{
+    s: Number
+}], ComponentB);
+const ComponentC = function ComponentC(props, state: { ss: number }, __h) {
+    return <div></div>;
+};
+
+Reflect.defineMetadata("design:function", true, ComponentC);
+Reflect.defineMetadata("design:paramtypes", [{
+    ss: Number
+}], ComponentC);
+function ComponentE(props, state, __h) {
     const b = { a: [<div>E</div>] };
 }
 
 Reflect.defineMetadata("design:function", true, ComponentE);
-function ComponentFFactory1(state: State) {
-    const __h = state.__h;
-
-    return () => <div>F</div>;
+function ComponentD(rec: { p: number }, state, __h) {
+    return <div>AA</div>;
 }
 
-Reflect.defineMetadata("design:function", true, ComponentFFactory1);
-Reflect.defineMetadata("design:paramtypes", [{
-    p: Number
-}], ComponentFFactory1);
-function ComponentFFactory2({ p, __h: __h
-}: State) {
-    return () => <div>F</div>;
-}
-
-Reflect.defineMetadata("design:function", true, ComponentFFactory2);
-Reflect.defineMetadata("design:paramtypes", [{
-    p: Number
-}], ComponentFFactory2);
-function ComponentFFactory3({ p, __h: __h
-}: State) {
-    return function componentf() {
-        return <div>F</div>;
-    };
-}
-
-Reflect.defineMetadata("design:function", true, ComponentFFactory3);
-Reflect.defineMetadata("design:paramtypes", [{
-    p: Number
-}], ComponentFFactory3);
-let ComponentD = class ComponentD {
-    render() {
-        const __h = this.__h;
-
-        const c = <div><ComponentA />b</div>;
-        return c;
-    }
-};
+Reflect.defineMetadata("design:function", true, ComponentD);
+const ComponentF = (props, state, __h) => <div>qwe</div>;
+Reflect.defineMetadata("design:function", true, ComponentF);
