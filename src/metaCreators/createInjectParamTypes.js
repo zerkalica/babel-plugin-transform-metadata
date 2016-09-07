@@ -11,11 +11,14 @@ export default function createInjectParamTypes(
         t.identifier('defineMetadata')
     )
     // console.log(functionsWithJsx)
-    return function injectParamTypes(rawTypes, target, type, path) {
+    return function injectParamTypes(rawTypes, target, node) {
         const body = []
+        const type = node.type
+        const isJsx = functionsWithJsx.has(node)
+
         if (rawTypes.length) {
             let types
-            if (functionsWithJsx.has(path.node)) {
+            if (isJsx) {
                 types = rawTypes.length > 1 ? [rawTypes[1]] : []
             } else {
                 types = rawTypes
@@ -56,7 +59,7 @@ export default function createInjectParamTypes(
             body.push(
                 t.expressionStatement(t.callExpression(
                     metaDataId,
-                    [t.stringLiteral(typeKey), t.booleanLiteral(true), target]
+                    [t.stringLiteral(typeKey), t.stringLiteral(isJsx ? 'jsx' : 'func'), target]
                 ))
             )
         }

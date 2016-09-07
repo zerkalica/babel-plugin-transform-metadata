@@ -104,7 +104,7 @@ function ComponentD(rec: { p: number }, state: State, __h) {
     return <div>AA</div>;
 }
 
-Reflect.defineMetadata('design:function', true, ComponentD);
+Reflect.defineMetadata('design:subtype', 'jsx', ComponentD);
 Reflect.defineMetadata('design:paramtypes', [{
     s: Number
 }], ComponentD);
@@ -112,7 +112,7 @@ function factory(): () => void {
     return () => {};
 }
 
-Reflect.defineMetadata('design:function', true, factory);
+Reflect.defineMetadata('design:subtype', 'func', factory);
 type ResultOf<F> = _ResultOf<*, F>;
 type _ResultOf<V, F: (...x: any[]) => V> = V;
 
@@ -120,7 +120,7 @@ function fn(a: A, b: Class<B>, f: ResultOf<factory>) {
     function fn2(a: A) {}
 }
 
-Reflect.defineMetadata('design:function', true, fn);
+Reflect.defineMetadata('design:subtype', 'func', fn);
 Reflect.defineMetadata('design:paramtypes', [A, B, factory], fn);
 const id = 'IT';
 ```

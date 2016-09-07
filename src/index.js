@@ -18,7 +18,7 @@ const defaults = {
     reflectImport: null,
     typeNameStrategy: 'typeName',
     paramKey: 'design:paramtypes',
-    typeKey: 'design:function',
+    typeKey: 'design:subtype',
     onlyExports: false,
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
     ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',

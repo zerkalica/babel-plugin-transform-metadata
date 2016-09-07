@@ -10,7 +10,7 @@ function createFn(): typeof FN {
     return a => {};
 }
 
-Reflect.defineMetadata("design:function", true, createFn);
+Reflect.defineMetadata("design:subtype", "func", createFn);
 type ResultOf<F> = _ResultOf<*, F>;
 type _ResultOf<V, F: (...x: any[]) => V> = V;
 

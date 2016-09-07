@@ -10,7 +10,6 @@ const addReflections = {
     ) {
         const node = path.node
         const parent = path.parent
-
         let ref
         let insertPath
         switch (parent.type) {
@@ -63,7 +62,7 @@ const addReflections = {
                 insertPath,
                 params,
                 ref,
-                node.type
+                node
             ])
         }
     }
