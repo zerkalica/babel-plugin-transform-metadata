@@ -7,7 +7,7 @@ export default function createTypeForAnnotation(
     let createGenericTypeMetadata
     let createObjectTypeMetadata
 
-    function typeForAnnotation(annotation) {
+    function typeForAnnotation(annotation, typeParameters) {
         if (!annotation) {
             return null
         }
@@ -23,7 +23,7 @@ export default function createTypeForAnnotation(
             case 'TypeofTypeAnnotation':
                 return createGenericTypeMetadata(annotation.argument)
             case 'GenericTypeAnnotation':
-                return createGenericTypeMetadata(annotation)
+                return createGenericTypeMetadata(annotation, typeParameters)
             case 'ObjectTypeAnnotation':
                 return createObjectTypeMetadata(annotation)
             case 'FunctionTypeAnnotation':

@@ -23,7 +23,10 @@ export default function createInjectParamTypes(
             } else {
                 types = rawTypes
             }
-            const typeArgs = typeForAnnotations(types)
+            const typeArgs = typeForAnnotations(
+                types,
+                node.typeParameters ? node.typeParameters.params : null
+            )
             if (typeArgs.length) {
                 body.push(t.expressionStatement(t.callExpression(
                     metaDataId,
