@@ -17,10 +17,17 @@ const getTypesInfo = {
         if (path.parent.type === 'JSXElement') {
             return
         }
-
-        const funcScope = path.scope.getFunctionParent()
-        const funcPath = funcScope.path
-        if (!funcPath.isProgram()) {
+        let scope = path.scope
+        let funcPath
+        do {
+            scope = scope.getFunctionParent()
+            if (scope.path.isProgram()) {
+                break
+            }
+            funcPath = scope.path
+            scope = scope.parent
+        } while (scope)
+        if (funcPath) {
             state.functionsWithJsx.add(funcPath.node)
         }
     },
