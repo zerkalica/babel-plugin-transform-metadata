@@ -1,8 +1,5 @@
 // @flow
 
-let B = class B {};
-
-
 const FN: (a: string) => void = (() => {}: any);
 
 // type FN = typeof FN
@@ -15,18 +12,11 @@ type ResultOf<F> = _ResultOf<*, F>;
 type _ResultOf<V, F: (...x: any[]) => V> = V;
 
 interface Deps {
-    b: Class<B>;
-    f: typeof FN;
-    d: ResultOf<createFn>;
-    d2: ResultOf<typeof createFn>;
+    d2: ResultOf<typeof createFn>
 }
-
 let MyClass = class MyClass {
-    constructor(deps: Deps, b: Class<B>, d: typeof FN) {}
+    constructor(deps: Deps) {}
 };
 Reflect.defineMetadata("design:paramtypes", [{
-    b: B,
-    f: FN,
-    d: createFn,
     d2: createFn
-}, B, FN], MyClass);
+}], MyClass);

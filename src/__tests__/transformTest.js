@@ -19,7 +19,7 @@ const babelConfig = {
         }]
     ]
 }
-const create: boolean = true
+const create: boolean = false
 
 describe('transformTest', () => {
     glob.sync(__dirname + '/data/*.js').forEach((inName: string) => {

@@ -24,14 +24,12 @@ Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
 
 
 interface State { s: number }
-function ComponentD(rec: { p: number }, state: State) {
+function ComponentD(rec: { p: number }, state: State, __h) {
     return <div>AA</div>;
 }
 
-Reflect.defineMetadata('design:subtype', 'func', ComponentD);
+Reflect.defineMetadata('design:subtype', 'jsx', ComponentD);
 Reflect.defineMetadata('design:paramtypes', [{
-    p: Number
-}, {
     s: Number
 }], ComponentD);
 function factory(): () => void {

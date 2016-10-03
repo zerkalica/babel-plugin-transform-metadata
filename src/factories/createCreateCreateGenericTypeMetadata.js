@@ -6,7 +6,12 @@ export default function createCreateCreateGenericTypeMetadata(
 ) {
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation, typeParameters) {
+            if (annotation.type === 'TypeofTypeAnnotation') {
+                return createGenericTypeMetadata(annotation.argument)
+            }
+
             let id = annotation.id
+
             if (typeParameters) {
                 for (let i = 0; i < typeParameters.length; i++) {
                     if (typeParameters[i].name === id.name) {
