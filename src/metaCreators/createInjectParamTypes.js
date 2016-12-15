@@ -88,13 +88,14 @@ export default function createInjectParamTypes(
                     t.booleanLiteral(true)
                 )))
             }
-            if (filename) {
-                body.push(t.expressionStatement(t.assignmentExpression(
-                    '=',
-                    t.memberExpression(target, debugId),
-                    t.stringLiteral(`${filename}#${target.name}`)
-                )))
-            }
+        }
+
+        if (filename) {
+            body.push(t.expressionStatement(t.assignmentExpression(
+                '=',
+                t.memberExpression(target, debugId),
+                t.stringLiteral(`${filename}#${target.name}`)
+            )))
         }
 
         return body
