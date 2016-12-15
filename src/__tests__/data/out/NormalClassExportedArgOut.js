@@ -17,4 +17,5 @@ var MyClass = function MyClass(a, b) {
 };
 
 exports.default = MyClass;
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/NormalClassExportedArg.js#MyClass";
 MyClass._rdiArg = [A, B];

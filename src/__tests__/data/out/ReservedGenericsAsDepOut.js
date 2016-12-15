@@ -20,6 +20,7 @@ var MyClass = function MyClass(deps, b, d) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#MyClass";
 MyClass._rdiArg = [{
     b: B,
     r: B,

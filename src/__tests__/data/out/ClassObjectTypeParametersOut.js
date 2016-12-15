@@ -6,6 +6,7 @@ var MyClass = function MyClass(state) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ClassObjectTypeParameters.js#MyClass";
 MyClass._rdiArg = [{
     a: A,
     b: String

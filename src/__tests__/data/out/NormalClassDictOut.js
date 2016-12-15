@@ -10,6 +10,7 @@ var MyClass = function MyClass(deps) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js#MyClass";
 MyClass._rdiArg = [{
     b: V
 }];

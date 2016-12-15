@@ -14,6 +14,7 @@ var A = function A(b, e, i, some) {
     _classCallCheck(this, A);
 };
 
+A._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#A';
 dec2({ k: 'test' })(A, null, 1);
 dec1(A, null, 0);
 A._rdiArg = [B, 'IT', {

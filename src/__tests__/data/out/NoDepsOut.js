@@ -5,3 +5,5 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var MyClass = function MyClass() {
     _classCallCheck(this, MyClass);
 };
+
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/NoDeps.js#MyClass";

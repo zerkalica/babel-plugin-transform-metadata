@@ -16,6 +16,7 @@ var MyClass = function MyClass(deps) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#MyClass";
 MyClass._rdiArg = [{
     d2: createFn
 }];

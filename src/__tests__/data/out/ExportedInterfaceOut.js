@@ -10,4 +10,5 @@ var MyClass = function MyClass(c) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ExportedInterface.js#MyClass";
 MyClass._rdiArg = ["C"];

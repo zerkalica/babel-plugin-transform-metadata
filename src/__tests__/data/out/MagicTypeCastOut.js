@@ -10,6 +10,7 @@ var MyClass = function MyClass(c) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/MagicTypeCast.js#MyClass';
 MyClass._rdiArg = ['C'];
 
 

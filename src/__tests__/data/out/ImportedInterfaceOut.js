@@ -6,4 +6,5 @@ var MyClass = function MyClass(it) {
     _classCallCheck(this, MyClass);
 };
 
+MyClass._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/ImportedInterface.js#MyClass';
 MyClass._rdiArg = ['IT'];
