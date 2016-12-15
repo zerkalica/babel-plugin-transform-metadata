@@ -1,8 +1,9 @@
-// @flow
+'use strict';
 
-import type { IT } from './imports/ITest';
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-let MyClass = class MyClass {
-    constructor(it: IT) {}
+var MyClass = function MyClass(it) {
+    _classCallCheck(this, MyClass);
 };
-Reflect.defineMetadata('design:paramtypes', ['IT'], MyClass);
+
+MyClass._rdiArg = ['IT'];

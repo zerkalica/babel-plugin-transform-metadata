@@ -1,32 +1,29 @@
-// @flow
+"use strict";
 
-let B = class B {};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var B = function B() {
+    _classCallCheck(this, B);
+};
 
-const FN: (a: string) => void = (() => {}: any);
+var FN = function FN() {};
 
 // type FN = typeof FN
-function createFn(): typeof FN {
-    return (a: string) => {};
+function createFn() {
+    return function (a) {};
 }
 
-Reflect.defineMetadata("design:subtype", "func", createFn);
-type ResultOf<F> = _ResultOf<*, F>;
-type _ResultOf<V, F: (...x: any[]) => V> = V;
+createFn._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#createFn";
+createFn._rdiFn = true;
 
-interface Deps {
-    b: Class<B>;
-    f: typeof FN;
-    d: ResultOf<createFn>;
-    d2: ResultOf<typeof createFn>;
-}
-
-let MyClass = class MyClass {
-    constructor(deps: Deps, b: Class<B>, d: typeof FN) {}
+var MyClass = function MyClass(deps, b, d) {
+    _classCallCheck(this, MyClass);
 };
-Reflect.defineMetadata("design:paramtypes", [{
+
+MyClass._rdiArg = [{
     b: B,
+    r: B,
     f: FN,
     d: createFn,
     d2: createFn
-}, B, FN], MyClass);
+}, B, FN];

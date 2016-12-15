@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import fs from 'fs'
-import {transform} from 'babel-core'
+import {transformFileSync} from 'babel-core'
 import path from 'path'
 import assert from 'power-assert'
 import glob from 'glob'
@@ -15,7 +15,7 @@ const babelConfig = {
         'syntax-flow',
         'syntax-decorators',
         [pluginPath, {
-            // reflectImport: 'reactive-di/inject'
+            addDebugId: true
         }]
     ]
 }
@@ -26,8 +26,8 @@ describe('transformTest', () => {
         const rec = path.parse(inName)
         const outName: string = path.join(__dirname, 'data', 'out', `${rec.name}Out.js`)
         it(rec.name, () => {
-            const inFile = fs.readFileSync(inName).toString()
-            const {code} = transform(inFile, babelConfig)
+            // const inFile = fs.readFileSync(inName).toString()
+            const {code} = transformFileSync(inName, babelConfig)
             let outFile: string
             if (create) {
                 outFile = code

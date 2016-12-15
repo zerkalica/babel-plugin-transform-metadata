@@ -1,8 +1,7 @@
 export default function createCreateCreateGenericTypeMetadata(
     t,
     externalTypeNames,
-    internalTypes,
-    reservedGenerics
+    internalTypes
 ) {
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation, typeParameters) {
@@ -19,8 +18,13 @@ export default function createCreateCreateGenericTypeMetadata(
                     }
                 }
             }
-            if (reservedGenerics.has(id.name)) {
-                return createGenericTypeMetadata(annotation.typeParameters.params[0])
+            if (annotation.typeParameters
+                && annotation.typeParameters.params
+            ) {
+                const param = annotation.typeParameters.params[0]
+                if (param && (param.id || param.type === 'TypeofTypeAnnotation')) {
+                    return createGenericTypeMetadata(param)
+                }
             }
             const internalType = internalTypes.get(id.name)
             if (internalType) {

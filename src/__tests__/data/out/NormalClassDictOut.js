@@ -1,15 +1,15 @@
-// @flow
+"use strict";
 
-let B = class B<V> {};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
-interface Deps<V> {
-    b: B<V>
-}
-
-let MyClass = class MyClass {
-    constructor(deps: Deps<*>) {}
+var B = function B() {
+    _classCallCheck(this, B);
 };
-Reflect.defineMetadata("design:paramtypes", [{
-    b: B
-}], MyClass);
+
+var MyClass = function MyClass(deps) {
+    _classCallCheck(this, MyClass);
+};
+
+MyClass._rdiArg = [{
+    b: V
+}];

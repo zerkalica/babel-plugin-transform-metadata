@@ -3,13 +3,8 @@ const getTypesInfo = {
         /* eslint-disable no-param-reassign */
         const node = path.node
         const strPath = node.source.value
-        if (strPath === state.reflectImport) {
-            state.injectId = node.specifiers[0].local
-        }
         if (strPath === state.ambiantTypeCastImport) {
             state.ambiantTypeCast = path
-        } else {
-            state.lastImportPath = path
         }
     },
 

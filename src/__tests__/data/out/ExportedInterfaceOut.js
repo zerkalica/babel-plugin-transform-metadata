@@ -1,12 +1,13 @@
-// @flow
+"use strict";
 
-let A = class A {};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-
-export interface C {
-    a: A
-}
-let MyClass = class MyClass {
-    constructor(c: C) {}
+var A = function A() {
+    _classCallCheck(this, A);
 };
-Reflect.defineMetadata("design:paramtypes", ["C"], MyClass);
+
+var MyClass = function MyClass(c) {
+    _classCallCheck(this, MyClass);
+};
+
+MyClass._rdiArg = ["C"];

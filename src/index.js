@@ -1,3 +1,5 @@
+import {basename} from 'path'
+
 import getTypesInfo from './visitors/getTypesInfo'
 import addReflections from './visitors/addReflections'
 
@@ -15,35 +17,35 @@ import createInjectParamTypes from './metaCreators/createInjectParamTypes'
 import createInsertFactory from './modifiers/createInsertFactory'
 
 const defaults = {
-    reflectImport: null,
     typeNameStrategy: 'typeName',
     paramKey: 'design:paramtypes',
     typeKey: 'design:subtype',
     onlyExports: false,
+    addDebugId: false,
+    injectPrefix: '_rdi',
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
     ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
-    reservedGenerics: ['Class', 'ResultOf'],
-    jsxPragma: '__h'
+    jsxPragma: '_t'
 }
 
 export default function babelPluginTransformMetadata({types: t}) {
     let cnf
     return {
         visitor: {
-            Program(path, {opts}) {
+            Program(path, {opts, file}) {
                 if (!cnf) {
                     cnf = {...defaults, ...opts}
                 }
+                const prefix = process ? process.cwd() : ''
+                const filename = !cnf.addDebugId || file.opts.filename === 'unknown'
+                    ? null
+                    : basename(prefix) + file.opts.filename.substring(prefix.length)
                 const getUniqueTypeName = createGetUniqueTypeName(cnf.typeNameStrategy)
                 const state = {
                     getUniqueTypeName,
-                    reflectImport: cnf.reflectImport,
                     ambiantTypeCastImport: cnf.ambiantTypeCastImport,
                     ambiantDepsImport: cnf.ambiantDepsImport,
 
-                    lastImportPath: null,
-                    reservedGenerics: new Set(cnf.reservedGenerics),
-                    injectId: null,
                     ambiantTypeCast: null,
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
@@ -61,8 +63,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                 const createCreateGenericTypeMetadata = createCreateCreateGenericTypeMetadata(
                     t,
                     state.externalTypeNames,
-                    state.internalTypes,
-                    state.reservedGenerics
+                    state.internalTypes
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
@@ -74,23 +75,14 @@ export default function babelPluginTransformMetadata({types: t}) {
                     typeForAnnotation
                 )
 
-                let injectId = state.injectId
-                let injectorDeclaration = null
-                if (!injectId && cnf.reflectImport) {
-                    injectId = t.identifier('Driver')
-                    injectorDeclaration = t.importDeclaration(
-                       [t.importDefaultSpecifier(injectId)],
-                       t.stringLiteral(cnf.reflectImport)
-                   )
-                }
-
                 const injectParamTypes = createInjectParamTypes(
                     t,
-                    injectId,
+                    cnf.injectPrefix,
                     typeForAnnotations,
                     cnf.paramKey,
                     cnf.typeKey,
-                    state.functionsWithJsx
+                    state.functionsWithJsx,
+                    filename
                 )
                 const parentPathInsertAfter = createParentPathInsertAfter(injectParamTypes)
                 const reflectionState = {
@@ -110,14 +102,6 @@ export default function babelPluginTransformMetadata({types: t}) {
                 reflectionState.parentPaths.forEach(parentPathInsertAfter)
                 if (cnf.jsxPragma) {
                     state.functionsWithJsx.forEach(createInsertFactory(t, cnf.jsxPragma))
-                }
-
-                if (injectorDeclaration) {
-                    if (state.lastImportPath) {
-                        state.lastImportPath.insertAfter(injectorDeclaration)
-                    } else {
-                        path.node.body.unshift(injectorDeclaration)
-                    }
                 }
 
                 if (state.ambiantTypeCast) {

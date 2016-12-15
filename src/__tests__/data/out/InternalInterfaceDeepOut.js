@@ -1,16 +1,13 @@
-// @flow
+"use strict";
 
-interface A {
-    b: string
-}
-interface C {
-    a: A
-}
-let MyClass = class MyClass {
-    constructor(c: C) {}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var MyClass = function MyClass(c) {
+    _classCallCheck(this, MyClass);
 };
-Reflect.defineMetadata("design:paramtypes", [{
+
+MyClass._rdiArg = [{
     a: {
         b: String
     }
-}], MyClass);
+}];

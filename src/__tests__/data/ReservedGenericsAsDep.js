@@ -16,6 +16,7 @@ type _ResultOf<V, F: (...x: any[]) => V> = V
 
 interface Deps {
     b: Class<B>;
+    r: $Shape<B>;
     f: typeof FN;
     d: ResultOf<createFn>;
     d2: ResultOf<typeof createFn>;

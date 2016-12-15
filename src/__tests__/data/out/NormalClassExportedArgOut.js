@@ -1,10 +1,20 @@
-// @flow
+"use strict";
 
-export let A = class A {};
-export const B = class cB {};
+exports.__esModule = true;
 
-let MyClass = class MyClass {
-    constructor(a: A, b: B) {}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var A = exports.A = function A() {
+    _classCallCheck(this, A);
 };
-export { MyClass as default };
-Reflect.defineMetadata("design:paramtypes", [A, B], MyClass);
+
+var B = exports.B = function cB() {
+    _classCallCheck(this, cB);
+};
+
+var MyClass = function MyClass(a, b) {
+    _classCallCheck(this, MyClass);
+};
+
+exports.default = MyClass;
+MyClass._rdiArg = [A, B];

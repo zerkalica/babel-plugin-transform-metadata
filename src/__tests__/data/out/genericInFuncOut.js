@@ -1,7 +1,10 @@
-// @flow
+"use strict";
 
-export default function genericInFunc<C: Object, R: Object>(obj: C, rec: R): C {
-    return (0: any);
+exports.__esModule = true;
+exports.default = genericInFunc;
+function genericInFunc(obj, rec) {
+    return 0;
 }
-Reflect.defineMetadata("design:subtype", "func", genericInFunc);
-Reflect.defineMetadata("design:paramtypes", ["C", "R"], genericInFunc);
+genericInFunc._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/genericInFunc.js#genericInFunc";
+genericInFunc._rdiFn = true;
+genericInFunc._rdiArg = ["C", "R"];

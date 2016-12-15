@@ -1,22 +1,21 @@
-// @flow
+"use strict";
 
-const FN: (a: string) => void = (() => {}: any);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var FN = function FN() {};
 
 // type FN = typeof FN
-function createFn(): typeof FN {
-    return (a: string) => {};
+function createFn() {
+    return function (a) {};
 }
 
-Reflect.defineMetadata("design:subtype", "func", createFn);
-type ResultOf<F> = _ResultOf<*, F>;
-type _ResultOf<V, F: (...x: any[]) => V> = V;
+createFn._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#createFn";
+createFn._rdiFn = true;
 
-interface Deps {
-    d2: ResultOf<typeof createFn>
-}
-let MyClass = class MyClass {
-    constructor(deps: Deps) {}
+var MyClass = function MyClass(deps) {
+    _classCallCheck(this, MyClass);
 };
-Reflect.defineMetadata("design:paramtypes", [{
+
+MyClass._rdiArg = [{
     d2: createFn
-}], MyClass);
+}];

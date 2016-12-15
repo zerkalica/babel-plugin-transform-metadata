@@ -1,49 +1,52 @@
-// @flow
-import type { IT } from './imports/ITest';
+'use strict';
 
-import { Component as ReactComponent } from 'react';
+var _react = require('react');
 
-let B = class B<V> {};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-const f: number = 123;
-
-interface Internal<V> {
-    s: string;
-    b: B<V>;
-}
-
-let A = class A {
-    constructor(b: B<*>, e: IT, i: Internal<*>, some: typeof f) {}
+var B = function B() {
+    _classCallCheck(this, B);
 };
+
+var f = 123;
+
+var A = function A(b, e, i, some) {
+    _classCallCheck(this, A);
+};
+
 dec2({ k: 'test' })(A, null, 1);
 dec1(A, null, 0);
-Reflect.defineMetadata('design:paramtypes', [B, 'IT', {
+A._rdiArg = [B, 'IT', {
     s: String,
-    b: B
-}, f], A);
+    b: V
+}, f];
 
-
-interface State { s: number }
-function ComponentD(rec: { p: number }, state: State, __h) {
-    return <div>AA</div>;
+function ComponentD(rec, state, _t) {
+    return _t.h(
+        'div',
+        null,
+        'AA'
+    );
 }
 
-Reflect.defineMetadata('design:subtype', 'jsx', ComponentD);
-Reflect.defineMetadata('design:paramtypes', [{
+ComponentD._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#ComponentD';
+ComponentD._rdiJsx = true;
+ComponentD._rdiArg = [{
     s: Number
-}], ComponentD);
-function factory(): () => void {
-    return () => {};
+}];
+function factory() {
+    return function () {};
 }
 
-Reflect.defineMetadata('design:subtype', 'func', factory);
-type ResultOf<F> = _ResultOf<*, F>;
-type _ResultOf<V, F: (...x: any[]) => V> = V;
+factory._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#factory';
+factory._rdiFn = true;
 
-function fn(a: A, b: Class<B>, f: ResultOf<factory>) {
-    function fn2(a: A) {}
+
+function fn(a, b, f) {
+    function fn2(a) {}
 }
 
-Reflect.defineMetadata('design:subtype', 'func', fn);
-Reflect.defineMetadata('design:paramtypes', [A, B, factory], fn);
-const id = 'IT';
+fn._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#fn';
+fn._rdiFn = true;
+fn._rdiArg = [A, B, factory];
+var id = 'IT';

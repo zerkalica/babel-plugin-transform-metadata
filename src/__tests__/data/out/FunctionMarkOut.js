@@ -1,10 +1,14 @@
-// @flow
+"use strict";
 
-let A = class A {};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var A = function A() {
+    _classCallCheck(this, A);
+};
 
-function fn(a: A) {
-    function fn2(a: A) {}
+function fn(a) {
+    function fn2(a) {}
 }
-Reflect.defineMetadata("design:subtype", "func", fn);
-Reflect.defineMetadata("design:paramtypes", [A], fn);
+fn._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/FunctionMark.js#fn";
+fn._rdiFn = true;
+fn._rdiArg = [A];
