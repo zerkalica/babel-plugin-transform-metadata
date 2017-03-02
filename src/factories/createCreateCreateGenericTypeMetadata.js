@@ -30,10 +30,12 @@ export default function createCreateCreateGenericTypeMetadata(
             if (internalType) {
                 return createObjectTypeMetadata(internalType)
             }
-            const imported = externalTypeNames.get(id.name)
-            if (imported) {
-                id = t.stringLiteral(imported)
+            if (externalTypeNames.has(id.name)) {
+                const imported = externalTypeNames.get(id.name)
+
+                return imported ? t.stringLiteral(imported) : t.nullLiteral()
             }
+
             return id
         }
     }

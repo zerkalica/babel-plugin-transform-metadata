@@ -20,6 +20,7 @@ const defaults = {
     typeNameStrategy: 'typeName',
     paramKey: 'design:paramtypes',
     typeKey: 'design:subtype',
+    allowedGenerics: ['ResultOf'],
     onlyExports: false,
     addDebugId: false,
     injectPrefix: '_rdi',
@@ -47,6 +48,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     ambiantDepsImport: cnf.ambiantDepsImport,
 
                     ambiantTypeCast: null,
+                    allowedGenerics: new Set(cnf.allowedGenerics),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
                     exportNames: new Map(),
@@ -63,7 +65,8 @@ export default function babelPluginTransformMetadata({types: t}) {
                 const createCreateGenericTypeMetadata = createCreateCreateGenericTypeMetadata(
                     t,
                     state.externalTypeNames,
-                    state.internalTypes
+                    state.internalTypes,
+                    state.allowedGenerics
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,

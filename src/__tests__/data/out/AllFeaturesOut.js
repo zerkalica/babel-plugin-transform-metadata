@@ -19,7 +19,7 @@ dec2({ k: 'test' })(A, null, 1);
 dec1(A, null, 0);
 A._rdiArg = [B, 'IT', {
     s: String,
-    b: V
+    b: null
 }, f];
 
 function ComponentD(rec, state, _t) {

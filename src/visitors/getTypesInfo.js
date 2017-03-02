@@ -56,6 +56,13 @@ const getTypesInfo = {
         }
     },
 
+    'TypeParameter'(path, state) {
+        const node = path.node
+        state.externalTypeNames.set(
+            node.name,
+            null
+        )
+    },
     'TypeAlias|InterfaceDeclaration'(path, state) {
         const node = path.node
         const parent = path.parent
