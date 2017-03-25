@@ -14,40 +14,47 @@ var A = function A(b, e, i, some) {
     _classCallCheck(this, A);
 };
 
-A._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#A';
+A.displayName = 'A';
+A._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
 dec2({ k: 'test' })(A, null, 1);
 dec1(A, null, 0);
-A._rdiArg = [B, 'IT', {
+A._r1 = [B, 'IT', {
     s: String,
     b: null
 }, f];
+var createVNode = Inferno.createVNode;
 
-function ComponentD(rec, state, _t) {
-    return _t.h(
-        'div',
-        null,
-        'AA'
-    );
+function ComponentD(rec, state, createVNode) {
+    return createVNode(2, 'div', null, 'AA');
 }
 
-ComponentD._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#ComponentD';
-ComponentD._rdiJsx = true;
-ComponentD._rdiArg = [{
+ComponentD.displayName = 'ComponentD';
+ComponentD._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
+ComponentD._r2 = 1;
+ComponentD._r1 = [{
     s: Number
 }];
 function factory() {
     return function () {};
 }
 
-factory._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#factory';
-factory._rdiFn = true;
+factory.displayName = 'factory';
+factory._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
+factory._r2 = 2;
 
 
-function fn(a, b, f) {
+function fn(a, b, f, sA, saf) {
     function fn2(a) {}
 }
 
-fn._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#fn';
-fn._rdiFn = true;
-fn._rdiArg = [A, B, factory];
+fn.displayName = 'fn';
+fn._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
+fn._r2 = 2;
+fn._r1 = [A, B, factory, {
+    _r4: 1,
+    v: [A]
+}, {
+    _r4: 2,
+    v: [A, B]
+}];
 var id = 'IT';

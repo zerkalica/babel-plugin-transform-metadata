@@ -1,94 +1,245 @@
 # babel-plugin-transform-metadata
 
-Strict and smart reflection metadata generator for classes and functions from [flowtype](https://flowtype.org) metadata.
+Strict, optimized and smart reflection metadata generator for classes and functions from [flowtype](https://flowtype.org) metadata.
 
 -   Supports arrows and function expressions
--   Can use custom Reflection polyfill
 -   Metadata provided for array and object-style arguments
--   Functions marked as 'design:function'
+-   Generics and type arguments supported
 -   With transform-decorators-legacy supports argument decorators
--   Adds createElement as third argument to each function with jsx, used in [reactive-di](https://github.com/zerkalica/reactive-di) components: (props, state, h) => React$Element
+-   Adds createVNode as third argument to each function with jsx, used in [reactive-di](https://github.com/zerkalica/reactive-di) components: (props, state, h) => React$Element
+-   typeof, Class support
 
-flowtype and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
+## Examples
+
+### Interface as value
+
+Flowtype and [typescript](https://www.typescriptlang.org/) reflection does not support type annotations as value keys, so we use some trick with typecast.
+
+In:
 
 ```js
 // @flow
+
 import _ from 'babel-plugin-transform-metadata/_'
-const id = (_: IT)
+
+class A {}
+
+export interface C {
+    a: A;
+}
+class MyClass {
+    constructor(c: C) {}
+}
+
+const id = (_: C)
 ```
 
-converted to:
-
-```js
-// @flow
-const id = 'IT'
-```
-
-## Example
+Out:
 
 ```js
 'use strict';
 
-var _react = require('react');
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var B = function B() {
-    _classCallCheck(this, B);
-};
-
-var f = 123;
-
-var A = function A(b, e, i, some) {
+var A = function A() {
     _classCallCheck(this, A);
 };
 
-A._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#A';
-dec2({ k: 'test' })(A, null, 1);
-dec1(A, null, 0);
-A._rdiArg = [B, 'IT', {
-    s: String,
-    b: V
-}, f];
+var MyClass = function MyClass(c) {
+    _classCallCheck(this, MyClass);
+};
 
-function ComponentD(rec, state, _t) {
-    return _t.h(
-        'div',
-        null,
-        'AA'
-    );
+MyClass.displayName = 'MyClass';
+MyClass._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/MagicTypeCast.js';
+MyClass._r1 = ['C'];
+
+
+var id = 'C';
+```
+
+## Mark function
+
+In:
+
+```js
+// @flow
+
+function fn(a: A) {
+    function fn2(a: A) {
+
+    }
+}
+```
+
+Out:
+
+```js
+"use strict";
+
+function fn(a) {
+    function fn2(a) {}
+}
+fn.displayName = "fn";
+fn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/FunctionMark.js";
+fn._r2 = 2;
+fn._r1 = [A];
+```
+
+### Components metadata
+
+We use [inferno](https://infernojs.org/) style createVNode:
+
+In:
+
+```js
+// @flow
+class A {}
+interface State {s: A}
+function ComponentD(rec: {p: number}, state: State) {
+    return <div>AA</div>
+}
+```
+
+Out:
+
+```js
+
+function A() {}
+
+function ComponentD(rec, state, createVNode) {
+    return createVNode(2, 'div', null, 'AA');
 }
 
-ComponentD._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#ComponentD';
-ComponentD._rdiJsx = true;
-ComponentD._rdiArg = [{
-    s: Number
+ComponentD.displayName = 'ComponentD';
+ComponentD._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
+ComponentD._r2 = 1;
+ComponentD._r1 = [{
+    s: A
 }];
-function factory() {
-    return function () {};
+```
+
+### Type parameters
+In example below, ISource and IStatus to ids mappings are configured in .babelrc.
+Only first type parameter used.
+
+In:
+
+```js
+// @flow
+type ResultOf<F> = _ResultOf<*, F>
+type _ResultOf<V, F: (...x: any[]) => V> = V
+
+function fn(a: A, b: Class<B>, f: ResultOf<typeof factory>, sA: ISource<A>, saf: IStatus<A | B>) {
+    function fn2(a: A) {
+    }
 }
+```
 
-factory._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#factory';
-factory._rdiFn = true;
+Out:
 
+```js
+'use strict';
 
-function fn(a, b, f) {
+function fn(a, b, f, sA, saf) {
     function fn2(a) {}
 }
 
-fn._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#fn';
-fn._rdiFn = true;
-fn._rdiArg = [A, B, factory];
+fn.displayName = 'fn';
+fn._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
+fn._r2 = 2;
+fn._r1 = [A, B, factory, {
+    _r4: 1,
+    v: [A]
+}, {
+    _r4: 2,
+    v: [A, B]
+}];
 var id = 'IT';
+```
+
+For more examples see ./src/__tests__/data
+
+
+## Metadata
+
+```js
+
+  /**
+   * Class constructor or function argument
+   */
+  type IArg = IFunction | {
+
+    /**
+     * User defined interface id, see markGenerics
+     */
+    _r4: number;
+    /**
+     * Type arguments
+     */
+    v: IFunction[];
+  }
+
+  /**
+   * Each function or class constructor
+   */
+  interface IFunction {
+    (...args: any[]): any;
+    /**
+     * constructor/function arguments list
+     */
+    _r1?: IArg[];
+
+    /**
+     * bit flags: 1 - jsx, 2 - fn
+     */
+    _r2?: number;
+
+    /**
+     * relative filePath for hmr and debugging
+     */
+    _r3?: string;
+  }
 ```
 
 ## .babelrc options
 
 Add before babel-plugin-transform-decorators-legacy and other transformation plugins.
--   onlyExports: boolean - if true - add metadata only to exported function/classes
--   typeNameStrategy: 'fullPath' | 'typeName' - how to generate interface name tokens: fullPath - type name + crc(file with type path), typeName - type name only.
--   jsxPragma - createElement factory name, used for [reactive-di](https://github.com/zerkalica/reactive-di) components
--   addDebugId - true/false add debug Id to each exported class or function for hot reloading
+
+```js
+interface IOptions {
+   /**
+    * if true - add metadata only to exported function/classes
+    */
+    onlyExports?: boolean;
+
+    /**
+     * if true - add file path to each exported class or function for hot reloading
+     */
+    addFileName?: boolean;
+
+    /**
+     * if true - add function/class name to each exported class or function
+     */
+    addDisplayName?: boolean;
+
+    /**
+     * how to generate interface name tokens:
+     * fullPath - type name + crc(file with type path), typeName - type name only
+     */
+    typeNameStrategy?: 'typeName' | 'fullPath';
+
+    /**
+     * createElement/createVNode factory name, used for [reactive-di](https://github.com/zerkalica/reactive-di) components
+     */
+    jsxPragma?: string;
+
+    /**
+     * Interface to ids mappings: {'ISource': 1, 'IStatus': 2}
+     */
+    markGenerics?: {[id: string]: number};
+}
+```
+
 Example .babelrc:
 
 ```json
@@ -97,17 +248,17 @@ Example .babelrc:
         "syntax-flow",
         "transform-decorators-legacy",
         ["transform-metadata", {
-            "addDebugId": true,
+            "addFilename": true,
             "onlyExports": false,
+            "markGenerics": {"ISource": 1, "IStatus": 2},
             "typeNameStrategy": "typeName",
-            "jsxPragma": "_t"
+            "jsxPragma": "createVNode"
         }]
     ]
 }
 ```
 
-Restrictions
-------------
+## Restrictions
 
 For interface-based metadata we need to convert types to unique string tokens, something like this:
 

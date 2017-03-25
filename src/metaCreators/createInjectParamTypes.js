@@ -2,22 +2,16 @@ export default function createInjectParamTypes(
     t,
     injectPrefixRaw,
     typeForAnnotations,
-    paramKey,
-    typeKey,
     functionsWithJsx,
-    filename
+    filename,
+    addDisplayName
 ) {
-    const metaDataId = injectPrefixRaw ? null : t.memberExpression(
-        t.identifier('Reflect'),
-        t.identifier('defineMetadata')
-    )
-    const injectPrefix = injectPrefix || '_rdi'
-    const argId = t.identifier(`${injectPrefix}Arg`)
-    const jsxId = t.identifier(`${injectPrefix}Jsx`)
-    const fnId = t.identifier(`${injectPrefix}Fn`)
-    const debugId = t.identifier(`${injectPrefix}Dbg`)
+    const injectPrefix = injectPrefixRaw || '_r'
+    const argId = t.identifier(`${injectPrefix}1`)
+    const flagsId = t.identifier(`${injectPrefix}2`)
+    const fileId = t.identifier(`${injectPrefix}3`)
+    const displayNameId = t.identifier('displayName')
 
-    // console.log(functionsWithJsx)
     return function injectParamTypes(rawTypes, target, node) {
         const body = []
         const type = node.type
@@ -35,22 +29,11 @@ export default function createInjectParamTypes(
                 node.typeParameters ? node.typeParameters.params : null
             )
             if (typeArgs.length) {
-                if (metaDataId) {
-                    body.push(t.expressionStatement(t.callExpression(
-                        metaDataId,
-                        [
-                            t.stringLiteral(paramKey),
-                            t.arrayExpression(typeArgs),
-                            target
-                        ]
-                    )))
-                } else {
-                    body.push(t.expressionStatement(t.assignmentExpression(
-                        '=',
-                        t.memberExpression(target, argId),
-                        t.arrayExpression(typeArgs)
-                    )))
-                }
+                body.push(t.expressionStatement(t.assignmentExpression(
+                    '=',
+                    t.memberExpression(target, argId),
+                    t.arrayExpression(typeArgs)
+                )))
             }
 
             for (let i = 0; i < types.length; i++) {
@@ -74,27 +57,26 @@ export default function createInjectParamTypes(
             || type === 'FunctionExpression'
             || type === 'ArrowFunctionExpression'
         ) {
-            if (metaDataId) {
-                body.push(
-                    t.expressionStatement(t.callExpression(
-                        metaDataId,
-                        [t.stringLiteral(typeKey), t.stringLiteral(isJsx ? 'jsx' : 'func'), target]
-                    ))
-                )
-            } else {
-                body.push(t.expressionStatement(t.assignmentExpression(
-                    '=',
-                    t.memberExpression(target, isJsx ? jsxId : fnId),
-                    t.booleanLiteral(true)
-                )))
-            }
+            body.push(t.expressionStatement(t.assignmentExpression(
+                '=',
+                t.memberExpression(target, flagsId),
+                t.numericLiteral(isJsx ? 1 : 2)
+            )))
         }
 
         if (filename) {
             body.push(t.expressionStatement(t.assignmentExpression(
                 '=',
-                t.memberExpression(target, debugId),
-                t.stringLiteral(`${filename}#${target.name}`)
+                t.memberExpression(target, fileId),
+                t.stringLiteral(filename)
+            )))
+        }
+
+        if (addDisplayName) {
+            body.push(t.expressionStatement(t.assignmentExpression(
+                '=',
+                t.memberExpression(target, displayNameId),
+                t.stringLiteral(target.name)
             )))
         }
 

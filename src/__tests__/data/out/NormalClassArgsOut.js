@@ -14,5 +14,6 @@ var MyClass = function MyClass(a, b) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/NormalClassArgs.js#MyClass";
-MyClass._rdiArg = [A, B];
+MyClass.displayName = "MyClass";
+MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/NormalClassArgs.js";
+MyClass._r1 = [A, B];

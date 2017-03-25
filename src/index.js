@@ -18,15 +18,14 @@ import createInsertFactory from './modifiers/createInsertFactory'
 
 const defaults = {
     typeNameStrategy: 'typeName',
-    paramKey: 'design:paramtypes',
-    typeKey: 'design:subtype',
-    allowedGenerics: ['ResultOf'],
+    markGenerics: {'ISource': 1, 'IStatus': 2},
     onlyExports: false,
-    addDebugId: false,
-    injectPrefix: '_rdi',
+    addFileName: false,
+    addDisplayName: false,
+    injectPrefix: '_r',
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
     ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
-    jsxPragma: '_t'
+    jsxPragma: 'createVNode'
 }
 
 export default function babelPluginTransformMetadata({types: t}) {
@@ -38,7 +37,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     cnf = {...defaults, ...opts}
                 }
                 const prefix = process ? process.cwd() : ''
-                const filename = !cnf.addDebugId || file.opts.filename === 'unknown'
+                const filename = !cnf.addFileName || file.opts.filename === 'unknown'
                     ? null
                     : basename(prefix) + file.opts.filename.substring(prefix.length)
                 const getUniqueTypeName = createGetUniqueTypeName(cnf.typeNameStrategy)
@@ -46,9 +45,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     getUniqueTypeName,
                     ambiantTypeCastImport: cnf.ambiantTypeCastImport,
                     ambiantDepsImport: cnf.ambiantDepsImport,
-
                     ambiantTypeCast: null,
-                    allowedGenerics: new Set(cnf.allowedGenerics),
                     internalTypes: new Map(),
                     externalTypeNames: new Map(),
                     exportNames: new Map(),
@@ -66,7 +63,7 @@ export default function babelPluginTransformMetadata({types: t}) {
                     t,
                     state.externalTypeNames,
                     state.internalTypes,
-                    state.allowedGenerics
+                    cnf.markGenerics
                 )
                 const typeForAnnotation = createTypeForAnnotation(
                     t,
@@ -82,10 +79,9 @@ export default function babelPluginTransformMetadata({types: t}) {
                     t,
                     cnf.injectPrefix,
                     typeForAnnotations,
-                    cnf.paramKey,
-                    cnf.typeKey,
                     state.functionsWithJsx,
-                    filename
+                    filename,
+                    cnf.addDisplayName
                 )
                 const parentPathInsertAfter = createParentPathInsertAfter(injectParamTypes)
                 const reflectionState = {

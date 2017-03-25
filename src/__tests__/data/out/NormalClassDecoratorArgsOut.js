@@ -14,7 +14,8 @@ var MyClass = function MyClass(a, b) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass._rdiDbg = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDecoratorArgs.js#MyClass';
+MyClass.displayName = 'MyClass';
+MyClass._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDecoratorArgs.js';
 dec2('test')(MyClass, null, 1);
 dec1(MyClass, null, 0);
-MyClass._rdiArg = [A, B];
+MyClass._r1 = [A, B];

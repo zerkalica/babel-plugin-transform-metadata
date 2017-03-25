@@ -9,6 +9,7 @@ var A = function A() {
 function fn(a) {
     function fn2(a) {}
 }
-fn._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/FunctionMark.js#fn";
-fn._rdiFn = true;
-fn._rdiArg = [A];
+fn.displayName = "fn";
+fn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/FunctionMark.js";
+fn._r2 = 2;
+fn._r1 = [A];

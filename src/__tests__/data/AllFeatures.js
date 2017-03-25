@@ -34,7 +34,7 @@ function factory(): () => void {
 type ResultOf<F> = _ResultOf<*, F>
 type _ResultOf<V, F: (...x: any[]) => V> = V
 
-function fn(a: A, b: Class<B>, f: ResultOf<factory>) {
+function fn(a: A, b: Class<B>, f: ResultOf<typeof factory>, sA: ISource<A>, saf: IStatus<A | B>) {
     function fn2(a: A) {
     }
 }

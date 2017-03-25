@@ -1,7 +1,13 @@
 // @flow
+import Component from 'inferno-component'
+export class Ca extends Component {
+  render() {
+      <div/>
+  }
+}
 
 function ComponentA(rec: {p: number}, state: {s: number}, h) {
-    return <div>AA</div>
+    return <div onComponentDidMount={ () => {} }><Ca/></div>
 }
 
 const ComponentB = (props, state: {s: number}) => <div>qwe</div>
@@ -18,11 +24,11 @@ function ComponentE() {
 }
 
 function ComponentD(rec: {p: number}) {
-    return <div>AA</div>
+    return <div className="test"><ComponentA p="123" /><span/></div>
 }
 
 const ComponentF = () => <div>qwe</div>
 
 function ComponentG(rec: {p: number}) {
-    return <div>{items.map((i) => <div>{i}</div>)}</div>
+    return <div>{items.map((i) => <div key={i} >{i}</div>)}</div>
 }

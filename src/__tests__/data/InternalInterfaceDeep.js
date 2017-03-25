@@ -9,3 +9,10 @@ interface C {
 class MyClass {
     constructor(c: C) {}
 }
+
+class MyClass2 {
+    constructor() {}
+}
+
+class MyClass3 {
+}

@@ -13,15 +13,17 @@ function createFn() {
     return function (a) {};
 }
 
-createFn._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#createFn";
-createFn._rdiFn = true;
+createFn.displayName = "createFn";
+createFn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js";
+createFn._r2 = 2;
 
 var MyClass = function MyClass(deps, b, d) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#MyClass";
-MyClass._rdiArg = [{
+MyClass.displayName = "MyClass";
+MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js";
+MyClass._r1 = [{
     b: B,
     r: B,
     f: FN,

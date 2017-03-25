@@ -10,7 +10,8 @@ var MyClass = function MyClass(c) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/InternalInterface.js#MyClass";
-MyClass._rdiArg = [{
+MyClass.displayName = "MyClass";
+MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/InternalInterface.js";
+MyClass._r1 = [{
     a: A
 }];

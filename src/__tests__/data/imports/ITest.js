@@ -7,3 +7,7 @@ export type IT = {
 export type IW<A> = {
     test: A;
 }
+
+export type IStatus<V> = {
+    test: V;
+}

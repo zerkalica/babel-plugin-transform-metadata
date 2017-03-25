@@ -1,5 +1,3 @@
-// import generate from 'babel-generator'
-
 export default function createCreateCreateObjectTypeMetadata(t) {
     return function createCreateObjectTypeMetadata(typeForAnnotation) {
         return function createObjectTypeMetadata(annotation) {

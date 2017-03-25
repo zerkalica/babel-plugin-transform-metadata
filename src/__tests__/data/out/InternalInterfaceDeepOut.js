@@ -6,9 +6,21 @@ var MyClass = function MyClass(c) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass._rdiDbg = "babel-plugin-transform-metadata/src/__tests__/data/InternalInterfaceDeep.js#MyClass";
-MyClass._rdiArg = [{
+MyClass.displayName = "MyClass";
+MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/InternalInterfaceDeep.js";
+MyClass._r1 = [{
     a: {
         b: String
     }
 }];
+
+var MyClass2 = function MyClass2() {
+    _classCallCheck(this, MyClass2);
+};
+
+MyClass2.displayName = "MyClass2";
+MyClass2._r3 = "babel-plugin-transform-metadata/src/__tests__/data/InternalInterfaceDeep.js";
+
+var MyClass3 = function MyClass3() {
+    _classCallCheck(this, MyClass3);
+};

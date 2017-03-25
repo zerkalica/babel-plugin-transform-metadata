@@ -15,7 +15,8 @@ const babelConfig = {
         'syntax-flow',
         'syntax-decorators',
         [pluginPath, {
-            addDebugId: true
+            addDisplayName: true,
+            addFileName: true
         }]
     ]
 }
