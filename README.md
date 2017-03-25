@@ -86,8 +86,8 @@ fn._r1 = [A];
 ```
 
 ### Components metadata
-
-We use [inferno](https://infernojs.org/) style createVNode:
+Usable with [babel-plugin-inferno](https://github.com/infernojs/babel-plugin-inferno)
+We inject [inferno](https://infernojs.org/) style createVNode into component, now component is 100% pure function:
 
 In:
 
