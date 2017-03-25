@@ -57,7 +57,7 @@ MyClass._r1 = ['C'];
 var id = 'C';
 ```
 
-## Mark function
+### Mark function
 
 In:
 
@@ -154,13 +154,14 @@ fn._r1 = [A, B, factory, {
     _r4: 2,
     v: [A, B]
 }];
-var id = 'IT';
 ```
 
-For more examples see ./src/__tests__/data
+For more examples see ``` ./src/__tests__/data ```
 
 
 ## Metadata
+
+To each function plugin adds following metadata:
 
 ```js
 
