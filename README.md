@@ -4,10 +4,7 @@ Strict, optimized and smart reflection metadata generator for classes and functi
 
 -   Supports arrows and function expressions
 -   Metadata provided for array and object-style arguments
--   Generics and type arguments supported
--   With transform-decorators-legacy supports argument decorators
--   Adds createVNode as third argument to each function with jsx, used in [reactive-di](https://github.com/zerkalica/reactive-di) components: (props, state, h) => React$Element
--   typeof, Class support
+-   Generics and type arguments support
 
 ## Examples
 
@@ -50,8 +47,7 @@ var MyClass = function MyClass(c) {
 };
 
 MyClass.displayName = 'MyClass';
-MyClass._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/MagicTypeCast.js';
-MyClass._r1 = ['C'];
+MyClass._r = [0, ['C']];
 
 
 var id = 'C';
@@ -80,14 +76,10 @@ function fn(a) {
     function fn2(a) {}
 }
 fn.displayName = "fn";
-fn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/FunctionMark.js";
-fn._r2 = 2;
-fn._r1 = [A];
+fn._r = [1, [A]];
 ```
 
 ### Components metadata
-Usable with [babel-plugin-inferno](https://github.com/infernojs/babel-plugin-inferno)
-We inject [inferno](https://infernojs.org/) style createVNode into component, now component is 100% pure function:
 
 In:
 
@@ -111,8 +103,6 @@ function ComponentD(rec, state, createVNode) {
 }
 
 ComponentD.displayName = 'ComponentD';
-ComponentD._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
-ComponentD._r2 = 1;
 ComponentD._r1 = [{
     s: A
 }];

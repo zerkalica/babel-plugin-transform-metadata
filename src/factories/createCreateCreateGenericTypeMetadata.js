@@ -4,9 +4,6 @@ export default function createCreateCreateGenericTypeMetadata(
     internalTypes,
     markGenerics
 ) {
-    const propName = t.identifier('v')
-    const sigName = t.identifier('_r4')
-
     return function createCreateGenericTypeMetadata(createObjectTypeMetadata) {
         return function createGenericTypeMetadata(annotation, typeParameters) {
             if (annotation.type === 'TypeofTypeAnnotation') {
@@ -45,12 +42,11 @@ export default function createCreateCreateGenericTypeMetadata(
                 if (result) {
                     const interfaceId = markGenerics[id.name]
                     return interfaceId
-                        ? t.objectExpression([
-                            t.objectProperty(sigName, t.numericLiteral(interfaceId)),
-                            t.objectProperty(propName, t.arrayExpression(
+                        ? t.arrayExpression(
+                            [t.numericLiteral(interfaceId)].concat(
                                 Array.isArray(result) ? result : [result]
-                            ))
-                        ])
+                            )
+                        )
                         : result
                 }
             }
@@ -69,3 +65,4 @@ export default function createCreateCreateGenericTypeMetadata(
         }
     }
 }
+

@@ -13,20 +13,18 @@ function createFn() {
     return function (a) {};
 }
 
-createFn.displayName = "createFn";
-createFn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js";
-createFn._r2 = 2;
+createFn._r = [2];
+createFn.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#createFn";
 
 var MyClass = function MyClass(deps, b, d) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass.displayName = "MyClass";
-MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js";
-MyClass._r1 = [{
+MyClass._r = [0, [{
     b: B,
     r: B,
     f: FN,
     d: createFn,
     d2: createFn
-}, B, FN];
+}, B, FN]];
+MyClass.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ReservedGenericsAsDep.js#MyClass";

@@ -14,7 +14,6 @@ import createParentPathInsertAfter from './modifiers/createParentPathInsertAfter
 import createReplaceMagicTypeCasts from './modifiers/createReplaceMagicTypeCasts'
 
 import createInjectParamTypes from './metaCreators/createInjectParamTypes'
-import createInsertFactory from './modifiers/createInsertFactory'
 
 const defaults = {
     typeNameStrategy: 'typeName',
@@ -24,8 +23,7 @@ const defaults = {
     addDisplayName: false,
     injectPrefix: '_r',
     ambiantTypeCastImport: 'babel-plugin-transform-metadata/_',
-    ambiantDepsImport: 'babel-plugin-transform-metadata/Deps',
-    jsxPragma: 'createVNode'
+    ambiantDepsImport: 'babel-plugin-transform-metadata/Deps'
 }
 
 export default function babelPluginTransformMetadata({types: t}) {
@@ -99,9 +97,6 @@ export default function babelPluginTransformMetadata({types: t}) {
 
                 reflectionState.magicTypeCasts.forEach(replaceMagicTypeCasts)
                 reflectionState.parentPaths.forEach(parentPathInsertAfter)
-                if (cnf.jsxPragma) {
-                    state.functionsWithJsx.forEach(createInsertFactory(t, cnf.jsxPragma))
-                }
 
                 if (state.ambiantTypeCast) {
                     state.ambiantTypeCast.remove()

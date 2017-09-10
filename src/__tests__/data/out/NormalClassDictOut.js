@@ -6,24 +6,20 @@ var B = function B(v2) {
     _classCallCheck(this, B);
 };
 
-B.displayName = 'B';
-B._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js';
-B._r1 = ['IT'];
+B._r = [0, ['IT']];
+B.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js#B';
 
 
 function fn(v) {}
 
-fn.displayName = 'fn';
-fn._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js';
-fn._r2 = 2;
-fn._r1 = [null];
+fn._r = [2, [null]];
+fn.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js#fn';
 
 var MyClass = function MyClass(deps) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass.displayName = 'MyClass';
-MyClass._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js';
-MyClass._r1 = [{
+MyClass._r = [0, [{
     b: null
-}];
+}]];
+MyClass.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/NormalClassDict.js#MyClass';

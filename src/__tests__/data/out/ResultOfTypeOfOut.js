@@ -9,16 +9,14 @@ function createFn() {
     return function (a) {};
 }
 
-createFn.displayName = "createFn";
-createFn._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js";
-createFn._r2 = 2;
+createFn._r = [2];
+createFn.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#createFn";
 
 var MyClass = function MyClass(deps) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass.displayName = "MyClass";
-MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js";
-MyClass._r1 = [{
+MyClass._r = [0, [{
     d2: createFn
-}];
+}]];
+MyClass.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#MyClass";

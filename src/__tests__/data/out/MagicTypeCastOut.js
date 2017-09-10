@@ -10,9 +10,8 @@ var MyClass = function MyClass(c) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass.displayName = 'MyClass';
-MyClass._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/MagicTypeCast.js';
-MyClass._r1 = ['C'];
+MyClass._r = [0, ['C']];
+MyClass.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/MagicTypeCast.js#MyClass';
 
 
 var id = 'C';

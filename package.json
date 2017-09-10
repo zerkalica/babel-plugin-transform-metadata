@@ -10,22 +10,13 @@
     "builddir": "."
   },
   "scripts": {
-    "postinstall": "test -d conf && conf/resources/postinstall.sh $npm_package_name || exit 0",
-    "prepush": "exit 0 && npm test",
-    "prepublish": "conf/resources/prepublish.sh",
-    "preversion": "conf/resources/checkgit.sh && npm test",
-    "postversion": "git push && git push --tags",
-    "precommit": "exit 0",
-    "update": "ncu -ua && npm install",
-    "clean": "rm -rf $npm_package_config_builddir/dist coverage",
-    "build": "npm run clean && babel src --source-maps --out-dir $npm_package_config_builddir/dist",
-    "build.dev": "babel src --source-maps --out-dir $npm_package_config_builddir/dist --watch",
-    "lint": "exit 0 && eslint src",
-    "check": "flow check",
-    "testonly": "mocha",
-    "test": "npm run lint && npm run check && npm run testonly",
-    "test.dev": "npm run testonly -- --growl --watch",
-    "test.cov": "babel-istanbul cover --report text --report html node_modules/mocha/bin/_mocha"
+    "major": "npm test && npm run build && standard-version --release-as major && npm run postversion",
+    "release": "npm test && npm run build && standard-version && npm run postversion",
+    "postversion": "git push --follow-tags origin master && npm publish",
+    "clean": "rm -rf $npm_package_config_builddir/dist",
+    "build": "npm run clean && babel src --ignore __tests__ --source-maps --out-dir $npm_package_config_builddir/dist",
+    "test": "flow check && mocha",
+    "test.dev": "mocha --growl --watch"
   },
   "author": "Stefan Zerkalica <zerkalica@gmail.com>",
   "license": "MIT",
@@ -56,23 +47,21 @@
     "dist"
   ],
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-core": "^6.24.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-plugin-espower": "^2.3.2",
-    "babel-plugin-inferno": "^2.1.0",
-    "babel-plugin-module-resolver": "^2.5.0",
+    "babel-plugin-inferno": "^3.2.0",
+    "babel-plugin-module-resolver": "^2.7.1",
     "babel-plugin-syntax-decorators": "^6.13.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-es2015": "^6.24.0",
-    "babel-preset-stage-0": "^6.22.0",
-    "eslint": "^3.18.0",
-    "eslint-config-airplus": "^2.0.13",
-    "glob": "^7.1.1",
-    "mocha": "^3.2.0",
-    "power-assert": "^1.4.2",
-    "sinon": "^2.1.0"
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "glob": "^7.1.2",
+    "mocha": "^3.5.1",
+    "standard-version": "^4.2.0"
   },
   "dependencies": {
     "crc": "^3.4.4"

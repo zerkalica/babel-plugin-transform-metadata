@@ -3,19 +3,13 @@
 exports.__esModule = true;
 exports.Ca = undefined;
 
-var _infernoComponent = require("inferno-component");
-
-var _infernoComponent2 = _interopRequireDefault(_infernoComponent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _react = require("react");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var createVNode = Inferno.createVNode;
 
 var Ca = exports.Ca = function (_Component) {
     _inherits(Ca, _Component);
@@ -26,88 +20,103 @@ var Ca = exports.Ca = function (_Component) {
         return _possibleConstructorReturn(this, _Component.apply(this, arguments));
     }
 
-    Ca.prototype.render = function render(props, state, createVNode) {
-        createVNode(2, "div");
+    Ca.prototype.render = function render() {
+        h("div", null);
     };
 
     return Ca;
-}(_infernoComponent2.default);
+}(_react.Component);
 
 function ComponentA(rec, state, h) {
-    return createVNode(2, "div", null, createVNode(16, Ca), {
-        "onComponentDidMount": function onComponentDidMount() {}
-    });
+    return h(
+        "div",
+        { onComponentDidMount: function onComponentDidMount() {} },
+        h(Ca, null)
+    );
 }
 
-ComponentA.displayName = "ComponentA";
-ComponentA._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentA._r2 = 1;
-ComponentA._r1 = [{
+ComponentA._r = [1, [{
     s: Number
-}];
-var ComponentB = function ComponentB(props, state, createVNode) {
-    return createVNode(2, "div", null, "qwe");
+}]];
+ComponentA.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentA";
+var ComponentB = function ComponentB(props, state) {
+    return h(
+        "div",
+        null,
+        "qwe"
+    );
 };
 
-ComponentB.displayName = "ComponentB";
-ComponentB._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentB._r2 = 1;
-ComponentB._r1 = [{
+ComponentB._r = [1, [{
     s: Number
-}];
-var ComponentC = function ComponentC(props, state, createVNode) {
+}]];
+ComponentB.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentB";
+var ComponentC = function ComponentC(props, state) {
 
     var b = function b() {
-        a: [createVNode(2, "div", null, "E")];
+        a: [h(
+            "div",
+            null,
+            "E"
+        )];
     };
 
-    b.displayName = "b";
-    b._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-    b._r2 = 2;
-    return createVNode(2, "div");
+    b._r = [2];
+    b.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#b";
+    return h("div", null);
 };
 
-ComponentC.displayName = "ComponentC";
-ComponentC._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentC._r2 = 1;
-ComponentC._r1 = [{
+ComponentC._r = [1, [{
     ss: Number
-}];
-function ComponentE(props, state, createVNode) {
+}]];
+ComponentC.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentC";
+function ComponentE() {
     var b = function b() {
-        a: [createVNode(2, "div", null, "E")];
+        a: [h(
+            "div",
+            null,
+            "E"
+        )];
     };
-    b.displayName = "b";
-    b._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-    b._r2 = 2;
+    b._r = [2];
+    b.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#b";
 }
 
-ComponentE.displayName = "ComponentE";
-ComponentE._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentE._r2 = 1;
-function ComponentD(rec, state, createVNode) {
-    return createVNode(2, "div", {
-        "className": "test"
-    }, [createVNode(16, ComponentA, {
-        "p": "123"
-    }), createVNode(2, "span")]);
+ComponentE._r = [1];
+ComponentE.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentE";
+function ComponentD(rec) {
+    return h(
+        "div",
+        { className: "test" },
+        h(ComponentA, { p: "123" }),
+        h("span", null)
+    );
 }
 
-ComponentD.displayName = "ComponentD";
-ComponentD._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentD._r2 = 1;
-var ComponentF = function ComponentF(props, state, createVNode) {
-    return createVNode(2, "div", null, "qwe");
+ComponentD._r = [1];
+ComponentD.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentD";
+var ComponentF = function ComponentF() {
+    return h(
+        "div",
+        null,
+        "qwe"
+    );
 };
 
-ComponentF.displayName = "ComponentF";
-ComponentF._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentF._r2 = 1;
-function ComponentG(rec, state, createVNode) {
-    return createVNode(2, "div", null, items.map(function (i) {
-        return createVNode(2, "div", null, i, null, i);
-    }));
+ComponentF._r = [1];
+ComponentF.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentF";
+function ComponentG(rec) {
+    return h(
+        "div",
+        null,
+        items.map(function (i) {
+            return h(
+                "div",
+                { key: i },
+                i
+            );
+        })
+    );
 }
-ComponentG.displayName = "ComponentG";
-ComponentG._r3 = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js";
-ComponentG._r2 = 1;
+ComponentG._r = [1];
+ComponentG.displayName = "babel-plugin-transform-metadata/src/__tests__/data/JSXClass.js#ComponentG";

@@ -1,7 +1,0 @@
-{
-    "parser": "babel-eslint",
-    "extends": ["airplus"],
-    "rules": [
-        "bitwise": 0
-    ]
-}

@@ -1,5 +1,5 @@
 // @flow
-import Component from 'inferno-component'
+import {Component} from 'react'
 export class Ca extends Component {
   render() {
       <div/>

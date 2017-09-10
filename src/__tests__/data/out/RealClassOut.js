@@ -14,6 +14,5 @@ var MyClass = function MyClass(a, b) {
     _classCallCheck(this, MyClass);
 };
 
-MyClass.displayName = "MyClass";
-MyClass._r3 = "babel-plugin-transform-metadata/src/__tests__/data/RealClass.js";
-MyClass._r1 = [A, B];
+MyClass._r = [0, [A, B]];
+MyClass.displayName = "babel-plugin-transform-metadata/src/__tests__/data/RealClass.js#MyClass";

@@ -6,79 +6,57 @@ export default function createInjectParamTypes(
     filename,
     addDisplayName
 ) {
-    const injectPrefix = injectPrefixRaw || '_r'
-    const argId = t.identifier(`${injectPrefix}1`)
-    const flagsId = t.identifier(`${injectPrefix}2`)
-    const fileId = t.identifier(`${injectPrefix}3`)
+    const injectPrefix = t.identifier(injectPrefixRaw || '_r')
     const displayNameId = t.identifier('displayName')
 
     return function injectParamTypes(rawTypes, target, node) {
         const body = []
         const type = node.type
         const isJsx = functionsWithJsx.has(node)
+        const meta = []
 
+        let typeArgs = []
         if (rawTypes.length) {
             let types
             if (isJsx) {
-                types = rawTypes.length > 1 ? [rawTypes[1]] : []
+                types = rawTypes.slice(1)
             } else {
                 types = rawTypes
             }
-            const typeArgs = typeForAnnotations(
+
+            typeArgs = typeForAnnotations(
                 types,
                 node.typeParameters ? node.typeParameters.params : null
             )
-            if (typeArgs.length) {
-                body.push(t.expressionStatement(t.assignmentExpression(
-                    '=',
-                    t.memberExpression(target, argId),
-                    t.arrayExpression(typeArgs)
-                )))
-            }
-
-            for (let i = 0; i < types.length; i++) {
-                const argType = types[i]
-                const decorators = argType.decorators || []
-                for (let j = 0; j < decorators.length; j++) {
-                    body.push(t.expressionStatement(t.callExpression(
-                        decorators[j].expression,
-                        [
-                            target,
-                            t.identifier('null'),
-                            t.identifier(i.toString())
-                        ]
-                    )))
-                }
-            }
         }
 
-        if (
-            type === 'FunctionDeclaration'
+        const isFunction = type === 'FunctionDeclaration'
             || type === 'FunctionExpression'
             || type === 'ArrowFunctionExpression'
-        ) {
-            body.push(t.expressionStatement(t.assignmentExpression(
-                '=',
-                t.memberExpression(target, flagsId),
-                t.numericLiteral(isJsx ? 1 : 2)
-            )))
-        }
 
-        if (filename) {
-            body.push(t.expressionStatement(t.assignmentExpression(
-                '=',
-                t.memberExpression(target, fileId),
-                t.stringLiteral(filename)
-            )))
+        if (typeArgs.length) {
+            meta.push(t.numericLiteral(isJsx ? 1 : (isFunction ? 2 : 0)))
+            meta.push(t.arrayExpression(typeArgs))
+        } else if (isFunction) {
+            meta.push(t.numericLiteral(isJsx ? 1 : 2))
         }
 
         if (addDisplayName) {
             body.push(t.expressionStatement(t.assignmentExpression(
                 '=',
                 t.memberExpression(target, displayNameId),
-                t.stringLiteral(target.name)
+                t.stringLiteral(filename ? (filename + '#' + target.name) : target.name)
             )))
         }
+
+        if (meta.length) {
+            body.push(t.expressionStatement(t.assignmentExpression(
+                '=',
+                t.memberExpression(target, injectPrefix),
+                t.arrayExpression(meta)
+            )))
+        }
+
 
         return body
     }

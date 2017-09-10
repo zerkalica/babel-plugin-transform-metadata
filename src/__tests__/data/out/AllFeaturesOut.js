@@ -14,47 +14,36 @@ var A = function A(b, e, i, some) {
     _classCallCheck(this, A);
 };
 
-A.displayName = 'A';
-A._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
-dec2({ k: 'test' })(A, null, 1);
-dec1(A, null, 0);
-A._r1 = [B, 'IT', {
+A._r = [0, [B, 'IT', {
     s: String,
     b: null
-}, f];
-var createVNode = Inferno.createVNode;
+}, f]];
+A.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#A';
 
-function ComponentD(rec, state, createVNode) {
-    return createVNode(2, 'div', null, 'AA');
+function ComponentD(rec, state) {
+    return h(
+        'div',
+        null,
+        'AA'
+    );
 }
 
-ComponentD.displayName = 'ComponentD';
-ComponentD._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
-ComponentD._r2 = 1;
-ComponentD._r1 = [{
+ComponentD._r = [1, [{
     s: Number
-}];
+}]];
+ComponentD.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#ComponentD';
 function factory() {
     return function () {};
 }
 
-factory.displayName = 'factory';
-factory._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
-factory._r2 = 2;
+factory._r = [2];
+factory.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#factory';
 
 
 function fn(a, b, f, sA, saf) {
     function fn2(a) {}
 }
 
-fn.displayName = 'fn';
-fn._r3 = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js';
-fn._r2 = 2;
-fn._r1 = [A, B, factory, {
-    _r4: 1,
-    v: [A]
-}, {
-    _r4: 2,
-    v: [A, B]
-}];
+fn._r = [2, [A, B, factory, [1, A], [2, A, B]]];
+fn.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#fn';
 var id = 'IT';

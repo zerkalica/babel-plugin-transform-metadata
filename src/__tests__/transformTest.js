@@ -3,14 +3,15 @@
 import fs from 'fs'
 import {transformFileSync} from 'babel-core'
 import path from 'path'
-import assert from 'power-assert'
 import glob from 'glob'
+import assert from 'assert'
 
 const pluginPath = path.join(__dirname, '..', '..', 'dist', 'index.js')
 
 const babelConfig = {
     plugins: [
         'syntax-jsx',
+        ['transform-react-jsx', {pragma: 'h'}],
         'transform-decorators-legacy',
         'syntax-flow',
         'syntax-decorators',
