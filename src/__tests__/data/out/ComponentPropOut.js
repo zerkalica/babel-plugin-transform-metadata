@@ -1,17 +1,13 @@
 "use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var A = function A() {
-    _classCallCheck(this, A);
-};
+var A = function A() {};
 
 var MyClass = function MyClass(state) {
-    _classCallCheck(this, MyClass);
+  this.state = void 0;
 };
 
 MyClass._r = [0, [{
-    a: A,
-    b: String
+  a: A,
+  b: String
 }]];
-MyClass.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ComponentProp.js#MyClass";
+MyClass.displayName = "MyClass";

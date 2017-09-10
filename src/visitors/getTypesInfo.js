@@ -16,7 +16,7 @@ const getTypesInfo = {
         let funcPath
         do {
             scope = scope.getFunctionParent()
-            if (scope.path.isProgram()) {
+            if (!scope || scope.path.isProgram()) {
                 break
             }
             funcPath = scope.path

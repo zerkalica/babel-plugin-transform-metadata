@@ -1,49 +1,43 @@
-'use strict';
+"use strict";
 
-var _react = require('react');
+var _react = require("react");
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var B = function B() {
-    _classCallCheck(this, B);
-};
+var B = function B() {};
 
 var f = 123;
 
-var A = function A(b, e, i, some) {
-    _classCallCheck(this, A);
-};
+var A = function A(@dec1
+b, @dec2({
+  k: 'test'
+})
+e, i, some) {};
 
-A._r = [0, [B, 'IT', {
-    s: String,
-    b: null
+A._r = [0, [B, "IT", {
+  s: String,
+  b: null
 }, f]];
-A.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#A';
+A.displayName = "A";
 
 function ComponentD(rec, state) {
-    return h(
-        'div',
-        null,
-        'AA'
-    );
+  return React.createElement("div", null, "AA");
 }
 
 ComponentD._r = [1, [{
-    s: Number
+  s: Number
 }]];
-ComponentD.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#ComponentD';
+ComponentD.displayName = "ComponentD";
+
 function factory() {
-    return function () {};
+  return function () {};
 }
 
 factory._r = [2];
-factory.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#factory';
-
+factory.displayName = "factory";
 
 function fn(a, b, f, sA, saf) {
-    function fn2(a) {}
+  function fn2(a) {}
 }
 
 fn._r = [2, [A, B, factory, [1, A], [2, A, B]]];
-fn.displayName = 'babel-plugin-transform-metadata/src/__tests__/data/AllFeatures.js#fn';
-var id = 'IT';
+fn.displayName = "fn";
+var id = "IT";

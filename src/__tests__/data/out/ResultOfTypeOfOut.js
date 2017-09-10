@@ -1,22 +1,18 @@
 "use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var FN = function FN() {}; // type FN = typeof FN
 
-var FN = function FN() {};
 
-// type FN = typeof FN
 function createFn() {
-    return function (a) {};
+  return function (a) {};
 }
 
 createFn._r = [2];
-createFn.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#createFn";
+createFn.displayName = "createFn";
 
-var MyClass = function MyClass(deps) {
-    _classCallCheck(this, MyClass);
-};
+var MyClass = function MyClass(deps) {};
 
 MyClass._r = [0, [{
-    d2: createFn
+  d2: createFn
 }]];
-MyClass.displayName = "babel-plugin-transform-metadata/src/__tests__/data/ResultOfTypeOf.js#MyClass";
+MyClass.displayName = "MyClass";

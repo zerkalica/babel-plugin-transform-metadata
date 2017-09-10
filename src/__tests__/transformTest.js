@@ -9,15 +9,13 @@ import assert from 'assert'
 const pluginPath = path.join(__dirname, '..', '..', 'dist', 'index.js')
 
 const babelConfig = {
+    babelrc: false,
+    presets: ['flow', 'react', ['es2015', {loose: true}]],
     plugins: [
-        'syntax-jsx',
-        ['transform-react-jsx', {pragma: 'h'}],
-        'transform-decorators-legacy',
-        'syntax-flow',
-        'syntax-decorators',
+        'transform-decorators',
+        ['transform-class-properties', {'loose': true}],
         [pluginPath, {
-            addDisplayName: true,
-            addFileName: true
+            addDisplayName: true
         }]
     ]
 }
@@ -36,9 +34,8 @@ describe('transformTest', () => {
                 fs.writeFileSync(outName, outFile)
             } else {
                 outFile = fs.readFileSync(outName).toString()
+                assert(code === outFile)
             }
-
-            assert(code === outFile)
         })
     })
 })
