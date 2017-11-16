@@ -1,5 +1,3 @@
-"use strict";
-
 var FN = function FN() {}; // type FN = typeof FN
 
 

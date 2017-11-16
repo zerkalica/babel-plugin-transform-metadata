@@ -16,7 +16,7 @@ export default function createInjectParamTypes(
         const meta = []
 
         let typeArgs = []
-        if (rawTypes.length) {
+        if (rawTypes && rawTypes.length) {
             let types
             if (isJsx) {
                 types = rawTypes.slice(1)

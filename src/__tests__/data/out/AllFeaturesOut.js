@@ -4,6 +4,7 @@ var _react = require("react");
 
 var B = function B() {};
 
+B.displayName = "B";
 var f = 123;
 
 var A = function A(@dec1
@@ -19,7 +20,7 @@ A._r = [0, [B, "IT", {
 A.displayName = "A";
 
 function ComponentD(rec, state) {
-  return React.createElement("div", null, "AA");
+  return lom_h("div", null, "AA");
 }
 
 ComponentD._r = [1, [{

@@ -1,6 +1,6 @@
-"use strict";
-
 var B = function B() {};
+
+B.displayName = "B";
 
 var FN = function FN() {}; // type FN = typeof FN
 

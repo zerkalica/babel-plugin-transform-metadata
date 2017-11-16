@@ -7,7 +7,9 @@ var _react = require("react");
 
 function _inheritsLoose(subClass, superClass) { subClass.prototype = Object.create(superClass.prototype); subClass.prototype.constructor = subClass; subClass.__proto__ = superClass; }
 
-var Ca = exports.Ca = function (_Component) {
+var Ca =
+/*#__PURE__*/
+function (_Component) {
   _inheritsLoose(Ca, _Component);
 
   function Ca() {
@@ -17,16 +19,19 @@ var Ca = exports.Ca = function (_Component) {
   var _proto = Ca.prototype;
 
   _proto.render = function render() {
-    React.createElement("div", null);
+    lom_h("div", null);
   };
 
   return Ca;
 }(_react.Component);
 
+exports.Ca = Ca;
+Ca.displayName = "Ca";
+
 function ComponentA(rec, state, h) {
-  return React.createElement("div", {
+  return lom_h("div", {
     onComponentDidMount: function onComponentDidMount() {}
-  }, React.createElement(Ca, null));
+  }, lom_h(Ca, null));
 }
 
 ComponentA._r = [1, [{
@@ -35,7 +40,7 @@ ComponentA._r = [1, [{
 ComponentA.displayName = "ComponentA";
 
 var ComponentB = function ComponentB(props, state) {
-  return React.createElement("div", null, "qwe");
+  return lom_h("div", null, "qwe");
 };
 
 ComponentB._r = [1, [{
@@ -45,12 +50,12 @@ ComponentB.displayName = "ComponentB";
 
 var ComponentC = function ComponentC(props, state) {
   var b = function b() {
-    a: [React.createElement("div", null, "E")];
+    a: [lom_h("div", null, "E")];
   };
 
   b._r = [2];
   b.displayName = "b";
-  return React.createElement("div", null);
+  return lom_h("div", null);
 };
 
 ComponentC._r = [1, [{
@@ -60,7 +65,7 @@ ComponentC.displayName = "ComponentC";
 
 function ComponentE() {
   var b = function b() {
-    a: [React.createElement("div", null, "E")];
+    a: [lom_h("div", null, "E")];
   };
 
   b._r = [2];
@@ -71,26 +76,26 @@ ComponentE._r = [1];
 ComponentE.displayName = "ComponentE";
 
 function ComponentD(rec) {
-  return React.createElement("div", {
+  return lom_h("div", {
     className: "test"
-  }, React.createElement(ComponentA, {
+  }, lom_h(ComponentA, {
     p: "123"
-  }), React.createElement("span", null));
+  }), lom_h("span", null));
 }
 
 ComponentD._r = [1];
 ComponentD.displayName = "ComponentD";
 
 var ComponentF = function ComponentF() {
-  return React.createElement("div", null, "qwe");
+  return lom_h("div", null, "qwe");
 };
 
 ComponentF._r = [1];
 ComponentF.displayName = "ComponentF";
 
 function ComponentG(rec) {
-  return React.createElement("div", null, items.map(function (i) {
-    return React.createElement("div", {
+  return lom_h("div", null, items.map(function (i) {
+    return lom_h("div", {
       key: i
     }, i);
   }));

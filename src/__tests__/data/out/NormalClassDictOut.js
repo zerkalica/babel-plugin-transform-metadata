@@ -1,5 +1,3 @@
-"use strict";
-
 var B = function B(v2) {};
 
 B._r = [0, ["IT"]];

@@ -1,6 +1,6 @@
-"use strict";
-
 var A = function A() {};
+
+A.displayName = "A";
 
 var MyClass = function MyClass(c) {};
 

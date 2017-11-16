@@ -1,10 +1,8 @@
-"use strict";
-
 var A = function A() {};
 
-var MyClass = function MyClass(state) {
-  this.state = void 0;
-};
+A.displayName = "A";
+
+var MyClass = function MyClass(state) {};
 
 MyClass._r = [0, [{
   a: A,

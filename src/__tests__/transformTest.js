@@ -1,23 +1,22 @@
 /* eslint-env mocha */
 
 import fs from 'fs'
-import {transformFileSync} from 'babel-core'
+import {transformFileSync} from '@babel/core'
 import path from 'path'
 import glob from 'glob'
 import assert from 'assert'
 
 const pluginPath = path.join(__dirname, '..', '..', 'dist', 'index.js')
+const babelrc = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', '.babelrc')))
 
 const babelConfig = {
     babelrc: false,
-    presets: ['flow', 'react', ['es2015', {loose: true}]],
+    ...babelrc,
     plugins: [
-        'transform-decorators',
-        ['transform-class-properties', {'loose': true}],
         [pluginPath, {
             addDisplayName: true
         }]
-    ]
+    ].concat(babelrc.plugins)
 }
 const create: boolean = false
 

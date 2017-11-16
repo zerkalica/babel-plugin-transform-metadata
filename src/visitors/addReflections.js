@@ -57,7 +57,8 @@ const addReflections = {
             params = node.params
         }
 
-        if (params) {
+        // if (params)
+        {
             parentPaths.push([
                 insertPath,
                 params,

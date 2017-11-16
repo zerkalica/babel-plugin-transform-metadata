@@ -1,4 +1,3 @@
-import {crc32} from 'crc'
 import {sep, basename} from 'path'
 
 const escapedSep = sep.replace(/[\-\[\]{}()*+?.,\\\^$|#\s]/g, '\\$&')
@@ -11,7 +10,7 @@ export default function createGetUniqueTypeName(strategy: 'fullPath' | 'typeName
             ? basename(pathValue)
             : pathValue
 
-        return name + (suffix ? ('.' + crc32(suffix)) : '')
+        return name + (suffix ? ('.' + suffix) : '')
     }
 
     function getDefaultUniqueTypeName(pathValue, name) {

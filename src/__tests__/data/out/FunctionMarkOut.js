@@ -1,6 +1,6 @@
-"use strict";
-
 var A = function A() {};
+
+A.displayName = "A";
 
 function fn(a) {
   function fn2(a) {}

@@ -50,10 +50,6 @@ export default function babelPluginTransformMetadata({types: t}) {
                     functionsWithJsx: new Set()
                 }
                 path.traverse(getTypesInfo, state)
-                const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
-                    t,
-                    state.externalTypeNames
-                )
                 const createCreateObjectTypeMetadata = createCreateCreateObjectTypeMetadata(
                     t
                 )
@@ -95,6 +91,10 @@ export default function babelPluginTransformMetadata({types: t}) {
 
                 path.traverse(addReflections, reflectionState)
 
+                const replaceMagicTypeCasts = createReplaceMagicTypeCasts(
+                    t,
+                    state.externalTypeNames
+                )
                 reflectionState.magicTypeCasts.forEach(replaceMagicTypeCasts)
                 reflectionState.parentPaths.forEach(parentPathInsertAfter)
 

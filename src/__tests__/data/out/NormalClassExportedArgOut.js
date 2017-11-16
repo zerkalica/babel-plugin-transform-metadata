@@ -1,10 +1,16 @@
 "use strict";
 
 exports.__esModule = true;
+exports.default = exports.B = exports.A = void 0;
 
-var A = exports.A = function A() {};
+var A = function A() {};
 
-var B = exports.B = function cB() {};
+exports.A = A;
+A.displayName = "A";
+
+var B = function cB() {};
+
+exports.B = B;
 
 var MyClass = function MyClass(a, b) {};
 
